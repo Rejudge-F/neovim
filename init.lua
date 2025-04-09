@@ -198,6 +198,17 @@ require 'nvim-tree'.setup {
         enable = true,
         ignore = false,
     },
+    on_attach = function(bufnr)
+        local api = require('nvim-tree.api')
+        local opts = { noremap = true, silent = true, nowait = true, buffer = bufnr }
+
+        -- Default mappings
+        api.config.mappings.default_on_attach(bufnr)
+
+        -- Custom mappings
+        vim.keymap.set('n', 'sv', api.node.open.vertical, opts)
+        vim.keymap.set('n', 'sp', api.node.open.horizontal, opts)
+    end,
     hijack_cursor = true,
     respect_buf_cwd = true,
     sync_root_with_cwd = true,
@@ -391,6 +402,6 @@ require 'nvim-treesitter.configs'.setup {
         },
     },
     playground = {
-        enable = true,
+        enable = false,
     },
 }
