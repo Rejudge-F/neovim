@@ -203,16 +203,6 @@ require 'nvim-tree'.setup {
     sync_root_with_cwd = true,
 }
 vim.api.nvim_set_keymap('n', '<leader>n', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
--- vim.api.nvim_create_autocmd("VimEnter", {
---     callback = function()
---         vim.cmd("NvimTreeOpen")
---
---         local win_count = vim.fn.len(vim.fn.getwininfo())
---         if win_count > 1 then
---             vim.cmd("wincmd w")
---         end
---     end
--- })
 
 -- 设置 Airline
 vim.g.airline_extensions_tabline = { enabled = 1, left_sep = ' ', left_alt_sep = '|', formatter = 'default' }
@@ -369,8 +359,6 @@ _G.jump_to_window = function()
     end
 end
 vim.api.nvim_set_keymap('n', '<leader>w', ':lua jump_to_window()<CR>', { noremap = true, silent = true })
-
-
 
 
 -- set for treesitter
