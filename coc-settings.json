@@ -1,0 +1,10 @@
+{
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportAttributeAccessIssue": "none",
+        "reportArgumentType": "none",
+        "reportCallIssue": "none"
+    },
+    "python.formatting.blackPath": "/opt/homebrew/bin/black",
+    "python.formatting.provider": "black",
+    "coc.preferences.formatOnSave": true,
+}
