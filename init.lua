@@ -101,7 +101,7 @@ require("lazy").setup({
         },
         {
             "nvim-treesitter/nvim-treesitter",
-            build = ":TSUpdate",
+            run = ":TSUpdate",
             config = function()
                 require("nvim-treesitter.configs").setup({
                     ensure_installed = { "c", "cpp", "lua", "python", "javascript", "typescript", "go", "rust" },
@@ -181,11 +181,14 @@ require("lazy").setup({
                             }
                         },
                         file_ignore_patterns = {
-                            "^\\.git/",
+                            "^.git/",
                             "^node_modules/",
                             "^__pycache__/",
                             "^venv/",
-                            "^\\.venv/",
+                            "^.venv/",
+                            "undo",
+                            "%.pyc$",
+                            "%.DS_Store$",
                         },
                     },
                     pickers = {
@@ -199,7 +202,9 @@ require("lazy").setup({
                         },
                     },
                     extensions = {
-                        projects = {}
+                        projects = {
+
+                        }
                     }
                 })
                 require('telescope').load_extension('projects')
@@ -337,7 +342,7 @@ require("lazy").setup({
             end
         },
         {
-            "Exafunction/codeium.vim",
+            "Exafunction/codeium.vim"
         },
         {
             "akinsho/toggleterm.nvim",
@@ -429,12 +434,14 @@ require("lazy").setup({
         },
         {
             'ethanholz/nvim-lastplace',
+            event = "BufReadPre",
             config = function()
                 require 'nvim-lastplace'.setup {
                     lastplace_ignore_buftype = { "quickfix", "nofile", "help" },
                     lastplace_ignore_filetype = { "gitcommit", "gitrebase", "svn", "hgcommit" },
                     lastplace_open_folds = true
                 }
+                require 'nvim-lastplace'.setup {}
             end
         },
         {
@@ -445,6 +452,70 @@ require("lazy").setup({
         },
         {
             "lukas-reineke/indent-blankline.nvim"
+        },
+        {
+            "danymat/neogen",
+            requires = "nvim-treesitter/nvim-treesitter",
+            config = function()
+                require("neogen").setup({
+                    enabled = true,
+                    languages = {
+                        python = {
+                            template = {
+                                annotation_convention = "numpydoc"
+                            }
+                        }
+                    }
+                })
+
+                vim.api.nvim_set_keymap('n', '<Leader>cc', ':lua require("neogen").generate()<CR>',
+                    { noremap = true, silent = true })
+            end,
+        },
+        {
+            "folke/flash.nvim",
+            event = "VeryLazy",
+            opts = {
+                modes = {
+                    char = { enabled = false },
+                    search = { enabled = true },
+                    treesitter = { enabled = true },
+                },
+                label = {
+                    uppercase = false,
+                    rainbow = { enabled = true },
+                },
+            },
+            keys = {
+                {
+                    "<leader>s",
+                    mode = { "n", "x", "o" },
+                    function()
+                        require("flash").jump()
+                    end,
+                    desc = "Flash jump",
+                },
+                {
+                    "<leader>S",
+                    mode = { "n", "x", "o" },
+                    function()
+                        require("flash").treesitter()
+                    end,
+                    desc = "Flash treesitter",
+                },
+                {
+                    "r",
+                    mode = "o",
+                    function() require("flash").remote() end,
+                    desc = "Remote Flash"
+                },
+                {
+                    "R",
+                    mode = { "o", "x" },
+                    function() require("flash").treesitter_search() end,
+                    desc = "Treesitter Search"
+                },
+            },
         },
     },
     install = { colorscheme = { "habamax" } },
