@@ -1,34 +1,36 @@
-vim.opt.encoding      = 'utf-8'
-vim.opt.guicursor     = 'n-v-c-i:block'
-vim.opt.termguicolors = true
-vim.opt.sidescrolloff = 15
-vim.opt.showmatch     = true
-vim.opt.undofile      = true
-vim.opt.undodir       = vim.fn.expand('~/.config/nvim/undo/')
-vim.o.foldmethod      = 'expr'
-vim.o.foldexpr        = 'nvim_treesitter#foldexpr()'
-vim.o.foldlevelstart  = 99
-vim.opt.wildmenu      = true
-vim.opt.wildmode      = { 'longest:list', 'full' }
-vim.opt.vb            = true
-vim.opt.number        = true
-vim.opt.history       = 700
-vim.opt.undolevels    = 700
-vim.opt.tabstop       = 4
-vim.opt.softtabstop   = 4
-vim.opt.shiftwidth    = 4
-vim.opt.shiftround    = true
-vim.opt.expandtab     = true
-vim.opt.hlsearch      = true
-vim.opt.incsearch     = true
-vim.opt.ignorecase    = true
-vim.opt.smartcase     = true
-vim.opt.backup        = false
-vim.opt.writebackup   = false
-vim.opt.swapfile      = false
+vim.opt.encoding       = 'utf-8'
+vim.opt.guicursor      = 'n-v-c-i:block'
+vim.opt.termguicolors  = true
+vim.opt.sidescrolloff  = 15
+vim.opt.showmatch      = true
+vim.opt.undofile       = true
+vim.opt.undodir        = vim.fn.expand('~/.config/nvim/undo/')
+vim.opt.foldmethod     = 'expr'
+vim.opt.foldexpr       = 'nvim_treesitter#foldexpr()'
+vim.opt.foldlevelstart = 99
+vim.opt.wildmenu       = true
+vim.opt.wildmode       = { 'longest:list', 'full' }
+vim.opt.vb             = true
+vim.opt.number         = true
+vim.opt.history        = 700
+vim.opt.undolevels     = 700
+vim.opt.tabstop        = 4
+vim.opt.softtabstop    = 4
+vim.opt.shiftwidth     = 4
+vim.opt.shiftround     = true
+vim.opt.expandtab      = true
+vim.opt.hlsearch       = true
+vim.opt.incsearch      = true
+vim.opt.ignorecase     = true
+vim.opt.smartcase      = true
+vim.opt.backup         = false
+vim.opt.writebackup    = false
+vim.opt.swapfile       = false
+
 vim.cmd [[filetype plugin indent on]]
 vim.cmd [[syntax on]]
 vim.cmd [[highlight ColorColumn ctermbg=233]]
+
 vim.g.mapleader = ';'
 vim.g.maplocalleader = '\''
 vim.api.nvim_set_keymap('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })
@@ -63,8 +65,8 @@ require("lazy").setup({
     spec = {
         {
             "kyazdani42/nvim-tree.lua",
-            dependencies = "kyazdani42/nvim-web-devicons", -- 原 requires 改为 dependencies
-            config = function()                            -- 原 config 函数内容直接移植
+            dependencies = "kyazdani42/nvim-web-devicons",
+            config = function()
                 require("nvim-tree").setup {
                     update_focused_file = {
                         enable = true,
@@ -99,7 +101,7 @@ require("lazy").setup({
         },
         {
             "nvim-treesitter/nvim-treesitter",
-            build = ":TSUpdate", -- 原 run = ':TSUpdate' 改为 build
+            build = ":TSUpdate",
             config = function()
                 require("nvim-treesitter.configs").setup({
                     ensure_installed = { "c", "cpp", "lua", "python", "javascript", "typescript", "go", "rust" },
@@ -123,10 +125,7 @@ require("lazy").setup({
                                 ["ic"] = "@class.inner",
                             },
                             selection_modes = {
-                                ['@parameter.outer'] = 'v', -- charwise
-                                ['@function.outer'] = 'V',  -- linewise
-                                ['@class.outer'] = '<c-v>', -- blockwise
-                            },
+                                ['@parameter.outer'] = 'v', ['@function.outer'] = 'V', ['@class.outer'] = '<c-v>', },
                         },
                     },
                 })
@@ -134,75 +133,83 @@ require("lazy").setup({
         },
         {
             "nvim-treesitter/nvim-treesitter-textobjects",
-            dependencies = "nvim-treesitter/nvim-treesitter", -- 原 requires 改为 dependencies
-            after = "nvim-treesitter",                        -- 保持原加载顺序
-        }, {
-        "nvim-telescope/telescope.nvim",
-        tag = "0.1.8",                -- 保持原版本指定
-        dependencies = {
-            "nvim-lua/plenary.nvim",  -- 原 requires 改为 dependencies
-            "ahmedkhalf/project.nvim" -- 新增 projects 扩展依赖
+            dependencies = "nvim-treesitter/nvim-treesitter",
+            after = "nvim-treesitter",
         },
-        config = function()
-            local actions = require("telescope.actions")
-            local action_state = require("telescope.actions.state")
-            local function telescope_open_with_picker(prompt_bufnr)
-                local picker = action_state.get_current_picker(prompt_bufnr)
-                local entry = action_state.get_selected_entry()
-                actions.close(prompt_bufnr)
-                local win = require("window-picker").pick_window({})
-                if not win or not entry then return end
-                vim.api.nvim_set_current_win(win)
-                if picker.prompt_title:match("Buffer") then
-                    vim.cmd("buffer " .. entry.bufnr)
-                else
-                    local path = entry.path or entry.filename
-                    vim.cmd("edit " .. vim.fn.fnameescape(path))
-                end
+        {
+            "ahmedkhalf/project.nvim",
+            config = function()
+                require("project_nvim").setup {}
             end
-            require("telescope").setup({
-                defaults = {
-                    layout_strategy = "bottom_pane",
-                    layout_config = {
-                        bottom_pane = {
-                            height = 0.4,
-                            prompt_position = "bottom",
+        },
+        {
+            "nvim-telescope/telescope.nvim",
+            tag = "0.1.8",
+            dependencies = {
+                "nvim-lua/plenary.nvim", "ahmedkhalf/project.nvim" },
+            config = function()
+                local actions = require("telescope.actions")
+                local action_state = require("telescope.actions.state")
+                local function telescope_open_with_picker(prompt_bufnr)
+                    local picker = action_state.get_current_picker(prompt_bufnr)
+                    local entry = action_state.get_selected_entry()
+                    actions.close(prompt_bufnr)
+                    local win = require("window-picker").pick_window({})
+                    if not win or not entry then return end
+                    vim.api.nvim_set_current_win(win)
+                    if picker.prompt_title:match("Buffer") then
+                        vim.cmd("buffer " .. entry.bufnr)
+                    else
+                        local path = entry.path or entry.filename
+                        vim.cmd("edit " .. vim.fn.fnameescape(path))
+                    end
+                end
+                require("telescope").setup({
+                    defaults = {
+                        layout_strategy = "bottom_pane",
+                        layout_config = {
+                            bottom_pane = {
+                                height = 0.4,
+                                prompt_position = "bottom",
+                            },
                         },
-                    },
-                    mappings = {
-                        i = {
-                            ["<CR>"] = actions.select_vertical, -- 原 select_vertical 映射
-                        },
-                        n = {
-                            ["sv"] = actions.select_vertical,
-                            ["sp"] = actions.select_horizontal,
-                            ["<leader>w"] = telescope_open_with_picker, -- 原窗口选择器映射
+                        mappings = {
+                            i = {
+                                ["<CR>"] = actions.select_vertical, },
+                            n = {
+                                ["sv"] = actions.select_vertical,
+                                ["sp"] = actions.select_horizontal,
+                                ["<leader>w"] = telescope_open_with_picker,
+                            }
                         }
+                    },
+                    pickers = {
+                        find_files = {
+                            hidden = true,
+                            no_ignore = true,
+                        },
+                        live_grep = {
+                            no_ignore = true
+                        },
+                    },
+                    extensions = {
+                        projects = {}
                     }
-                },
-                pickers = {
-                    find_files = {
-                        hidden = true,
-                        no_ignore = true,
-                    },
-                    live_grep = {
-                        no_ignore = true
-                    },
-                },
-                extensions = {
-                    projects = {}
-                }
-            })
-            vim.keymap.set("n", "<leader>f", ":Telescope find_files<CR>", { noremap = true, silent = true })
-            vim.keymap.set("n", "<leader>ss", ":Telescope live_grep<CR>", { noremap = true, silent = true })
-            vim.keymap.set("n", "<leader>p", ":Telescope projects<CR>", { noremap = true, silent = true })
-            require("telescope").load_extension("projects")
-        end
-    },
+                })
+                require('telescope').load_extension('projects')
+                vim.keymap.set("n", "<leader>f", ":Telescope find_files<CR>",
+                    { noremap = true, silent = true })
+                vim.keymap.set("n", "<leader>ss", ":Telescope live_grep<CR>",
+                    { noremap = true, silent = true })
+                vim.keymap.set("n", "<leader>p", ":Telescope projects<CR>",
+                    { noremap = true, silent = true })
+                require("telescope").load_extension("projects")
+            end
+        },
         {
             "s1n7ax/nvim-window-picker",
             name = 'window-picker',
-            version = "2.*", -- 保持原版本指定
+            version = "2.*",
             event = 'VeryLazy',
             config = function()
                 require("window-picker").setup({
@@ -223,97 +230,109 @@ require("lazy").setup({
                         vim.api.nvim_set_current_win(picked_window_id)
                     end
                 end
-                vim.keymap.set("n", "<leader>w", ":lua jump_to_window()<CR>", {
-                    noremap = true,
-                    silent = true,
-                    desc = "Pick window" -- 新增描述（可选）
-                })
+                vim.keymap.set("n", "<leader>w", ":lua jump_to_window()<CR>",
+                    {
+                        noremap = true,
+                        silent = true,
+                        desc = "Pick window"
+                    })
             end
         },
         {
             "junegunn/seoul256.vim",
-            lazy = false,                       -- 启动时立即加载（色彩方案需要）
-            priority = 1000,                    -- 确保优先于其他插件加载
+            lazy = false,
+            priority = 1000,
             config = function()
-                vim.g.seoul256_background = 236 -- 保持原背景色设置
-                vim.cmd("colorscheme seoul256") -- 应用色彩方案
+                vim.g.seoul256_background = 236
+                vim.cmd("colorscheme seoul256")
             end
-        }, {
-        "sindrets/diffview.nvim",
-        cmd = { "DiffviewOpen", "DiffviewClose" }, -- 按需加载
-        keys = {                                   -- 键映射定义
-            { "dfo", "<cmd>DiffviewOpen<cr>",  desc = "Open diff view" },
-            { "dfc", "<cmd>DiffviewClose<cr>", desc = "Close diff view" },
-            { "dfp", "<cmd>diffput<cr>",       desc = "Diff put" },
-            { "dfg", "<cmd>diffget<cr>",       desc = "Diff get" },
         },
-        config = function()
-            require("diffview").setup({
-            })
-        end
-    }, {
-        "junegunn/vim-easy-align",
-        keys = {                           -- 定义触发按键（保持原映射）
-            { "ga", mode = { "n", "x" } }, -- 原vim映射直接转换
+        {
+            "sindrets/diffview.nvim",
+            cmd = { "DiffviewOpen", "DiffviewClose" },
+            keys = { { "dfo", "<cmd>DiffviewOpen<cr>", desc = "Open diff view" },
+                { "dfc", "<cmd>DiffviewClose<cr>", desc = "Close diff view" },
+                { "dfp", "<cmd>diffput<cr>",       desc = "Diff put" },
+                { "dfg", "<cmd>diffget<cr>",       desc = "Diff get" },
+            },
+            config = function()
+                require("diffview").setup({
+                })
+            end
         },
-        init = function()                  -- 替代原vim.g配置
-            vim.g.easy_align_delimiters = {
-            }
-        end,
-    }, {
-        "neoclide/coc.nvim",
-        branch = "release",    -- 保持原分支指定
-        build = "npm install", -- 原安装命令
-        event = "VeryLazy",    -- 延迟加载（推荐）
-        config = function()
-            vim.g.coc_global_extensions = {
-                'coc-json',
-                'coc-tsserver',
-                'coc-pyright',
-                'coc-go',
-                'coc-rust-analyzer',
-                'coc-lua',
-            }
-            vim.keymap.set("n", "rn", "<Plug>(coc-rename)", { desc = "Rename symbol" })
-            vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { desc = "Go to definition" })
-            vim.keymap.set("n", "gy", "<Plug>(coc-type-definition)", { desc = "Go to type definition" })
-            vim.keymap.set("n", "gi", "<Plug>(coc-implementation)", { desc = "Go to implementation" })
-            vim.keymap.set("n", "gr", "<Plug>(coc-references)", { desc = "Show references" })
-            vim.keymap.set("n", "gf", "<Plug>(coc-fix-current)", { desc = "Auto-fix current" })
-            vim.keymap.set("i", "<CR>",
-                [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]],
-                { expr = true, desc = "Confirm completion" })
-            vim.api.nvim_create_user_command("Format", "call CocAction('format')", {})
-        end
-    }, {
-        "tpope/vim-surround",
-        keys = { -- 可选：声明插件提供的默认键映射
-            { "cs", mode = "n" },
-            { "ds", mode = "n" },
-            { "ys", mode = { "n", "x" } },
-            { "S",  mode = "x" },
+        {
+            "junegunn/vim-easy-align",
+            keys = { { "ga", mode = { "n", "x" } }, },
+            init = function()
+                vim.g.easy_align_delimiters = {
+                }
+            end,
         },
-        init = function() -- 可选：配置（该插件通常不需要setup）
-        end,
-    }, {
-        "nvim-lualine/lualine.nvim",
-        dependencies = { "nvim-tree/nvim-web-devicons" }, -- 可选图标支持
-        event = "VeryLazy",
-        config = function()
-            require('lualine').setup({
-            })
-        end
-    }, {
-        'tveskag/nvim-blame-line',
-        config = function()
-            vim.api.nvim_create_autocmd("BufEnter", {
-                pattern = "*",
-                command = "EnableBlameLine"
-            })
-        end
-    }, {
-        "Exafunction/codeium.vim",
-    }, -- toggleterm.nvim 插件
+        {
+            "neoclide/coc.nvim",
+            branch = "release",
+            build = "npm install",
+            event = "VeryLazy",
+            config = function()
+                vim.g.coc_global_extensions = {
+                    'coc-json',
+                    'coc-tsserver',
+                    'coc-pyright',
+                    'coc-go',
+                    'coc-rust-analyzer',
+                    'coc-lua',
+                }
+                vim.keymap.set("n", "rn", "<Plug>(coc-rename)",
+                    { desc = "Rename symbol" })
+                vim.keymap.set("n", "gd", "<Plug>(coc-definition)",
+                    { desc = "Go to definition" })
+                vim.keymap.set("n", "gy", "<Plug>(coc-type-definition)",
+                    { desc = "Go to type definition" })
+                vim.keymap.set("n", "gi", "<Plug>(coc-implementation)",
+                    { desc = "Go to implementation" })
+                vim.keymap.set("n", "gr", "<Plug>(coc-references)",
+                    { desc = "Show references" })
+                vim.keymap.set("n", "gf", "<Plug>(coc-fix-current)",
+                    { desc = "Auto-fix current" })
+                vim.keymap.set("i", "<CR>",
+                    [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]],
+                    { expr = true, desc = "Confirm completion" })
+                vim.api.nvim_create_user_command("Format", "call CocAction('format')",
+                    {})
+            end
+        },
+        {
+            "tpope/vim-surround",
+            keys = { { "cs", mode = "n" },
+                { "ds", mode = "n" },
+                { "ys", mode = { "n", "x" } },
+                { "S",  mode = "x" },
+            },
+            init = function() end,
+        },
+        {
+            "nvim-lualine/lualine.nvim",
+            dependencies = { "nvim-tree/nvim-web-devicons" },
+            event = "VeryLazy",
+            config = function()
+                require('lualine').setup({
+                    theme = 'auto',
+                })
+            end
+        },
+        {
+            'tveskag/nvim-blame-line',
+            config = function()
+                vim.api.nvim_create_autocmd("BufEnter",
+                    {
+                        pattern = "*",
+                        command = "EnableBlameLine"
+                    })
+            end
+        },
+        {
+            "Exafunction/codeium.vim",
+        },
         {
             "akinsho/toggleterm.nvim",
             config = function()
@@ -324,12 +343,18 @@ require("lazy").setup({
                     persist_size = true,
                     direction = 'horizontal',
                 }
-                vim.api.nvim_set_keymap('n', '<leader>t', ':ToggleTerm<CR>', { noremap = true, silent = true })
-                vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
-                vim.api.nvim_set_keymap('n', '<C-1>', ':1ToggleTerm<CR>', { noremap = true, silent = true })
-                vim.api.nvim_set_keymap('n', '<C-2>', ':2ToggleTerm<CR>', { noremap = true, silent = true })
-                vim.api.nvim_set_keymap('n', '<C-3>', ':3ToggleTerm<CR>', { noremap = true, silent = true })
-                vim.api.nvim_set_keymap('n', '<C-4>', ':4ToggleTerm<CR>', { noremap = true, silent = true })
+                vim.api.nvim_set_keymap('n', '<leader>t', ':ToggleTerm<CR>',
+                    { noremap = true, silent = true })
+                vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>',
+                    { noremap = true, silent = true })
+                vim.api.nvim_set_keymap('n', '<C-1>', ':1ToggleTerm<CR>',
+                    { noremap = true, silent = true })
+                vim.api.nvim_set_keymap('n', '<C-2>', ':2ToggleTerm<CR>',
+                    { noremap = true, silent = true })
+                vim.api.nvim_set_keymap('n', '<C-3>', ':3ToggleTerm<CR>',
+                    { noremap = true, silent = true })
+                vim.api.nvim_set_keymap('n', '<C-4>', ':4ToggleTerm<CR>',
+                    { noremap = true, silent = true })
             end
         },
         {
