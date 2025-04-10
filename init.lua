@@ -174,14 +174,19 @@ require("lazy").setup({
                             },
                         },
                         mappings = {
-                            i = {
-                                ["<CR>"] = actions.select_vertical, },
                             n = {
                                 ["sv"] = actions.select_vertical,
                                 ["sp"] = actions.select_horizontal,
                                 ["<leader>w"] = telescope_open_with_picker,
                             }
-                        }
+                        },
+                        file_ignore_patterns = {
+                            "^\\.git/",
+                            "^node_modules/",
+                            "^__pycache__/",
+                            "^venv/",
+                            "^\\.venv/",
+                        },
                     },
                     pickers = {
                         find_files = {
@@ -189,6 +194,7 @@ require("lazy").setup({
                             no_ignore = true,
                         },
                         live_grep = {
+                            hidden = true,
                             no_ignore = true
                         },
                     },
