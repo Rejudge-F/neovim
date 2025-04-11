@@ -33,6 +33,7 @@ vim.cmd [[highlight ColorColumn ctermbg=233]]
 
 vim.g.mapleader = ';'
 vim.g.maplocalleader = '\''
+vim.api.nvim_set_keymap('x', '<leader>y', '"+y<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>h', '<C-w>h', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>j', '<C-w>j', { noremap = true, silent = true })
