@@ -577,7 +577,27 @@ require("lazy").setup({
                     end
                 })
             end
-        }
+        },
+        {
+            "nvim-treesitter/nvim-treesitter-context",
+            dependencies = { "nvim-treesitter/nvim-treesitter" },
+            config = function()
+                require("treesitter-context").setup()
+            end
+        },
+        {
+            "kevinhwang91/nvim-ufo",
+            dependencies = "kevinhwang91/promise-async",
+            event = "BufReadPost",
+            opts = {
+                provider_selector = function(_, filetype)
+                    -- 优先用 treesitter 折叠，若不可用则回退到 indent
+                    return filetype == "markdown" and "indent" or { "treesitter", "indent" }
+                end
+            },
+            -- 原生 zc/zo 自动支持，此处无需配置
+        },
+
     },
     install = { colorscheme = { "habamax" } },
     checker = { enabled = true },
