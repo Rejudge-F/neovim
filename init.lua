@@ -30,6 +30,7 @@ vim.opt.swapfile       = false
 vim.cmd [[filetype plugin indent on]]
 vim.cmd [[syntax on]]
 vim.cmd [[highlight ColorColumn ctermbg=233]]
+vim.cmd [[autocmd BufLeave * silent! update]]
 
 vim.g.mapleader = ';'
 vim.g.maplocalleader = '\''
