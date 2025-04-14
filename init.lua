@@ -264,8 +264,6 @@ require("lazy").setup({
             cmd = { "DiffviewOpen", "DiffviewClose" },
             keys = { { "dfo", "<cmd>DiffviewOpen<cr>", desc = "Open diff view" },
                 { "dfc", "<cmd>DiffviewClose<cr>", desc = "Close diff view" },
-                { "dfp", "<cmd>diffput<cr>",       desc = "Diff put" },
-                { "dfg", "<cmd>diffget<cr>",       desc = "Diff get" },
             },
             config = function()
                 require("diffview").setup({
@@ -333,16 +331,6 @@ require("lazy").setup({
             end
         },
         {
-            'tveskag/nvim-blame-line',
-            config = function()
-                vim.api.nvim_create_autocmd("BufEnter",
-                    {
-                        pattern = "*",
-                        command = "EnableBlameLine"
-                    })
-            end
-        },
-        {
             "Exafunction/codeium.vim"
         },
         {
@@ -378,6 +366,7 @@ require("lazy").setup({
         },
         {
             "rcarriga/nvim-dap-ui",
+            tag = "v4.0.0",
             dependencies = {
                 "nvim-neotest/nvim-nio",
                 "mfussenegger/nvim-dap"
@@ -518,6 +507,95 @@ require("lazy").setup({
                 },
             },
         },
+        {
+            "lewis6991/gitsigns.nvim",
+            config = function()
+                require('gitsigns').setup({
+                    signs                        = {
+                        add          = { text = '┃' },
+                        change       = { text = '┃' },
+                        delete       = { text = '_' },
+                        topdelete    = { text = '‾' },
+                        changedelete = { text = '~' },
+                        untracked    = { text = '┆' },
+                    },
+                    signcolumn                   = true,
+                    numhl                        = false,
+                    linehl                       = false,
+                    word_diff                    = false,
+                    watch_gitdir                 = {
+                        interval = 100,
+                        follow_files = true
+                    },
+                    attach_to_untracked          = true,
+                    current_line_blame           = true,
+                    current_line_blame_opts      = {
+                        virt_text = true,
+                        virt_text_pos = 'eol',
+                        delay = 100,
+                        ignore_whitespace = false,
+                    },
+                    current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
+                    sign_priority                = 6,
+                    update_debounce              = 100,
+                    status_formatter             = nil,
+                    max_file_length              = 40000,
+                    preview_config               = {
+                        border = 'single',
+                        style = 'minimal',
+                        relative = 'cursor',
+                        row = 0,
+                        col = 1
+                    },
+                    on_attach                    = function(bufnr)
+                        local gitsigns = require('gitsigns')
+
+                        local function map(mode, l, r, opts)
+                            opts = opts or {}
+                            opts.buffer = bufnr
+                            vim.keymap.set(mode, l, r, opts)
+                        end
+
+                        -- Navigation
+                        map('n', ']c', function()
+                            if vim.wo.diff then
+                                vim.cmd.normal({ ']c', bang = true })
+                            else
+                                gitsigns.nav_hunk('next')
+                            end
+                        end)
+
+                        map('n', '[c', function()
+                            if vim.wo.diff then
+                                vim.cmd.normal({ '[c', bang = true })
+                            else
+                                gitsigns.nav_hunk('prev')
+                            end
+                        end)
+                    end
+                })
+            end
+        },
+        {
+            "nvim-treesitter/nvim-treesitter-context",
+            dependencies = { "nvim-treesitter/nvim-treesitter" },
+            config = function()
+                require("treesitter-context").setup()
+            end
+        },
+        {
+            "kevinhwang91/nvim-ufo",
+            dependencies = "kevinhwang91/promise-async",
+            event = "BufReadPost",
+            opts = {
+                provider_selector = function(_, filetype)
+                    -- 优先用 treesitter 折叠，若不可用则回退到 indent
+                    return filetype == "markdown" and "indent" or { "treesitter", "indent" }
+                end
+            },
+            -- 原生 zc/zo 自动支持，此处无需配置
+        },
+
     },
     install = { colorscheme = { "habamax" } },
     checker = { enabled = true },
