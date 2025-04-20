@@ -280,37 +280,156 @@ require("lazy").setup({
             end,
         },
         {
-            "neoclide/coc.nvim",
-            branch = "release",
-            build = "npm install",
-            event = "VeryLazy",
+            "windwp/nvim-autopairs",
+            event = "InsertEnter",
             config = function()
-                vim.g.coc_global_extensions = {
-                    'coc-json',
-                    'coc-tsserver',
-                    'coc-pyright',
-                    'coc-go',
-                    'coc-rust-analyzer',
-                    'coc-lua',
-                }
-                vim.keymap.set("n", "rn", "<Plug>(coc-rename)",
-                    { desc = "Rename symbol" })
-                vim.keymap.set("n", "gd", "<Plug>(coc-definition)",
-                    { desc = "Go to definition" })
-                vim.keymap.set("n", "gy", "<Plug>(coc-type-definition)",
-                    { desc = "Go to type definition" })
-                vim.keymap.set("n", "gi", "<Plug>(coc-implementation)",
-                    { desc = "Go to implementation" })
-                vim.keymap.set("n", "gr", "<Plug>(coc-references)",
-                    { desc = "Show references" })
-                vim.keymap.set("n", "gf", "<Plug>(coc-fix-current)",
-                    { desc = "Auto-fix current" })
-                vim.keymap.set("i", "<CR>",
-                    [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]],
-                    { expr = true, desc = "Confirm completion" })
-                vim.api.nvim_create_user_command("Format", "call CocAction('format')",
-                    {})
+                local npairs = require("nvim-autopairs")
+                npairs.setup({
+                    check_ts = true,
+                })
+
+
+                local cmp = require("cmp")
+                local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+                cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+            end,
+        },
+        {
+            "nvim-treesitter/nvim-treesitter-context",
+            dependencies = { "nvim-treesitter/nvim-treesitter" },
+            config = function()
+                require("treesitter-context").setup(
+                    {
+                        enable = true,
+                        max_lines = 5,
+                        trim_scope = "outer",
+                        min_window_height = 0,
+                    }
+                )
             end
+        },
+        {
+            "neovim/nvim-lspconfig",
+            event = { "BufReadPre", "BufNewFile", "BufEnter" },
+            dependencies = {
+
+                { "williamboman/mason.nvim", config = true },
+                "williamboman/mason-lspconfig.nvim",
+
+
+                {
+                    "hrsh7th/nvim-cmp",
+                    dependencies = {
+                        "hrsh7th/cmp-nvim-lsp",
+                        "hrsh7th/cmp-buffer",
+                        "hrsh7th/cmp-path",
+                        "hrsh7th/cmp-cmdline",
+                        "L3MON4D3/LuaSnip",
+                        "saadparwaiz1/cmp_luasnip"
+                    },
+                },
+            },
+            config = function()
+                require("mason").setup()
+                require("mason-lspconfig").setup({
+                    ensure_installed = {
+                        "jsonls",
+                        "pyright",
+                        "gopls",
+                        "lua_ls",
+                        "thriftls",
+                    },
+                })
+
+
+                local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+
+                local cmp = require("cmp")
+                local luasnip = require("luasnip")
+
+                require("luasnip.loaders.from_vscode").lazy_load()
+
+                cmp.setup({
+                    snippet = {
+                        expand = function(args)
+                            luasnip.lsp_expand(args.body)
+                        end,
+                    },
+                    mapping = cmp.mapping.preset.insert({
+                        ["<CR>"] = cmp.mapping.confirm({ select = true }),
+                        ["<C-j>"] = cmp.mapping(function(fallback)
+                            if cmp.visible() then
+                                cmp.select_next_item()
+                            elseif luasnip.expand_or_jumpable() then
+                                luasnip.expand_or_jump()
+                            else
+                                fallback()
+                            end
+                        end, { "i", "s" }),
+                        ["<C-k>"] = cmp.mapping(function(fallback)
+                            if cmp.visible() then
+                                cmp.select_prev_item()
+                            elseif luasnip.jumpable(-1) then
+                                luasnip.jump(-1)
+                            else
+                                fallback()
+                            end
+                        end, { "i", "s" }),
+                    }),
+                    sources = cmp.config.sources({
+                        { name = "nvim_lsp" },
+                        { name = "luasnip" },
+                        { name = "buffer" },
+                        { name = "path" },
+                    }),
+                })
+
+
+                local lspconfig = require("lspconfig")
+                local servers = {
+                    jsonls = {},
+                    dartls = {
+                        cmd = { "dart", "language-server", "--protocol=lsp" },
+                    },
+                    thriftls = {},
+                    pyright = {},
+                    gopls = {},
+                    rust_analyzer = {},
+                    lua_ls = {
+                        settings = {
+                            Lua = {
+                                diagnostics = {
+                                    globals = { "vim" },
+                                },
+                            },
+                        },
+                    },
+                }
+
+                local on_attach = function(_, bufnr)
+                    local nmap = function(keys, func, desc)
+                        vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
+                    end
+
+                    nmap("rn", vim.lsp.buf.rename, "[LSP] Rename")
+                    nmap("gd", vim.lsp.buf.definition, "[LSP] Go to Definition")
+                    nmap("gy", vim.lsp.buf.type_definition, "[LSP] Type Definition")
+                    nmap("gi", vim.lsp.buf.implementation, "[LSP] Implementation")
+                    nmap("gr", vim.lsp.buf.references, "[LSP] References")
+                    nmap("gf", vim.lsp.buf.code_action, "[LSP] Code Action")
+
+                    vim.api.nvim_buf_create_user_command(bufnr, "Format", function()
+                        vim.lsp.buf.format({ async = true })
+                    end, { desc = "Format current buffer with LSP" })
+                end
+
+                for server, config in pairs(servers) do
+                    config.capabilities = capabilities
+                    config.on_attach = on_attach
+                    lspconfig[server].setup(config)
+                end
+            end,
         },
         {
             "tpope/vim-surround",
@@ -557,7 +676,7 @@ require("lazy").setup({
                             vim.keymap.set(mode, l, r, opts)
                         end
 
-                        -- Navigation
+
                         map('n', ']c', function()
                             if vim.wo.diff then
                                 vim.cmd.normal({ ']c', bang = true })
@@ -578,23 +697,15 @@ require("lazy").setup({
             end
         },
         {
-            "nvim-treesitter/nvim-treesitter-context",
-            dependencies = { "nvim-treesitter/nvim-treesitter" },
-            config = function()
-                require("treesitter-context").setup()
-            end
-        },
-        {
             "kevinhwang91/nvim-ufo",
             dependencies = "kevinhwang91/promise-async",
             event = "BufReadPost",
             opts = {
                 provider_selector = function(_, filetype)
-                    -- 优先用 treesitter 折叠，若不可用则回退到 indent
                     return filetype == "markdown" and "indent" or { "treesitter", "indent" }
                 end
             },
-            -- 原生 zc/zo 自动支持，此处无需配置
+
         },
 
     },
