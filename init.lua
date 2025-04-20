@@ -32,6 +32,7 @@ vim.cmd [[syntax on]]
 vim.cmd [[highlight ColorColumn ctermbg=233]]
 vim.cmd [[autocmd BufLeave * silent! update]]
 
+-- for diagnostics
 vim.o.updatetime = 100
 vim.api.nvim_create_autocmd("CursorHold", {
     callback = function()
@@ -462,6 +463,7 @@ require("lazy").setup({
                     nmap("gi", vim.lsp.buf.implementation, "[LSP] Implementation")
                     nmap("gr", vim.lsp.buf.references, "[LSP] References")
                     nmap("gf", vim.lsp.buf.code_action, "[LSP] Code Action")
+                    nmap("<leader>ca", vim.lsp.buf.code_action, "[LSP] Code Action")
 
                     vim.api.nvim_buf_create_user_command(bufnr, "Format", function()
                         vim.lsp.buf.format({ async = true })
