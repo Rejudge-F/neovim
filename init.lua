@@ -32,6 +32,13 @@ vim.cmd [[syntax on]]
 vim.cmd [[highlight ColorColumn ctermbg=233]]
 vim.cmd [[autocmd BufLeave * silent! update]]
 
+vim.o.updatetime = 100
+vim.api.nvim_create_autocmd("CursorHold", {
+    callback = function()
+        vim.diagnostic.open_float(nil, { focus = false })
+    end,
+})
+
 vim.g.mapleader = ';'
 vim.g.maplocalleader = '\''
 vim.api.nvim_set_keymap('x', '<leader>y', '"+y<CR>', { noremap = true, silent = true })
