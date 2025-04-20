@@ -295,6 +295,44 @@ require("lazy").setup({
             end,
         },
         {
+            "folke/trouble.nvim",
+            dependencies = { "nvim-tree/nvim-web-devicons" },
+            cmd = "Trouble",
+            config = function()
+                require("trouble").setup()
+            end
+        },
+        {
+            'stevearc/conform.nvim',
+            opts = {},
+            event = { "BufWritePre" },
+            config = function()
+                require('conform').setup(
+                    {
+                        formatters_by_ft = {
+                            python = { "black", "ruff_format", "ruff_fix" },
+                            rust = { "rustfmt" },
+                            go = { "goimport", "gofmt" },
+                            lua = { "stylua" },
+                            sh = { "shfmt" },
+                            dart = { "dart_format" },
+                        },
+                        format_on_save = {
+                            lsp_fallback = true,
+                            async = false,
+                            timeout_ms = 1000,
+                        },
+                    }
+                )
+                vim.api.nvim_create_autocmd("BufWritePre", {
+                    pattern = "*",
+                    callback = function(args)
+                        require("conform").format({ bufnr = args.buf })
+                    end,
+                })
+            end
+        },
+        {
             "nvim-treesitter/nvim-treesitter-context",
             dependencies = { "nvim-treesitter/nvim-treesitter" },
             config = function()
@@ -312,7 +350,6 @@ require("lazy").setup({
             "neovim/nvim-lspconfig",
             event = { "BufReadPre", "BufNewFile", "BufEnter" },
             dependencies = {
-
                 { "williamboman/mason.nvim", config = true },
                 "williamboman/mason-lspconfig.nvim",
 
