@@ -33,7 +33,6 @@ vim.cmd [[highlight ColorColumn ctermbg=233]]
 vim.cmd [[autocmd BufLeave * silent! update]]
 
 -- for diagnostics
-vim.o.updatetime = 100
 vim.api.nvim_create_autocmd("CursorHold", {
     callback = function()
         vim.diagnostic.open_float(nil, { focus = false })
@@ -130,15 +129,6 @@ require("lazy").setup({
                         symbol = "[+]",
                         highlight = "NeoTreeModified",
                     },
-                    window = {
-                        width = 30,
-                        mappings = {
-                            ["sv"] = "open_vsplit",
-                            ["sp"] = "open_split",
-                            ["o"] = "open_with_window_picker",
-                            ["<cr>"] = "open",
-                        }
-                    },
                     filesystem = {
                         filtered_items = {
                             visible = false, -- 默认不显示隐藏文件
@@ -159,6 +149,16 @@ require("lazy").setup({
                         },
                         hijack_netrw_behavior = "open_current",
                         use_libuv_file_watcher = true,
+                        window = {
+                            width = 30,
+                            mappings = {
+                                ["sv"] = "open_vsplit",
+                                ["sp"] = "open_split",
+                                ["o"] = "open_with_window_picker",
+                                ["<cr>"] = "open",
+                            }
+                        },
+
                     },
                 })
 
@@ -377,14 +377,14 @@ require("lazy").setup({
                         formatters_by_ft = {
                             python = { "black", "ruff_format", "ruff_fix" },
                             rust = { "rustfmt" },
-                            go = { "goimport", "gofmt" },
+                            go = { "goimports", "gofmt" },
                             lua = { "stylua" },
                             sh = { "shfmt" },
                             dart = { "dart_format" },
                         },
                         format_on_save = {
                             lsp_fallback = true,
-                            async = false,
+                            async = true,
                             timeout_ms = 1000,
                         },
                     }
@@ -495,7 +495,8 @@ require("lazy").setup({
                         cmd = { "dart", "language-server", "--protocol=lsp" },
                     },
                     thriftls = {},
-                    pyright = {},
+                    pyright = {
+                    },
                     gopls = {},
                     rust_analyzer = {},
                     lua_ls = {
@@ -821,7 +822,11 @@ require("lazy").setup({
                     show_symbol_details = true,
                 })
             end,
-        }
+        },
+        {
+            "solarnz/thrift.vim",
+            ft = "thrift",
+        },
     },
     install = { colorscheme = { "habamax" } },
     checker = { enabled = true },
