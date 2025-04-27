@@ -105,6 +105,15 @@ require("lazy").setup({
                     popup_border_style = "rounded",
                     enable_git_status = true,
                     enable_diagnostics = true,
+                    event_handlers = {
+                        {
+                            event = "git_event", -- 或者更具体的事件如 "git_commit", "git_push" 等
+                            handler = function()
+                                -- 刷新 neo-tree
+                                require("neo-tree.sources.manager").refresh("filesystem")
+                            end
+                        }
+                    },
                     default_component_configs = {
                         indent = {
                             indent_size = 2,
@@ -384,17 +393,16 @@ require("lazy").setup({
                         },
                         format_on_save = {
                             lsp_fallback = true,
-                            async = true,
                             timeout_ms = 1000,
                         },
                     }
                 )
-                vim.api.nvim_create_autocmd("BufWritePre", {
-                    pattern = "*",
-                    callback = function(args)
-                        require("conform").format({ bufnr = args.buf })
-                    end,
-                })
+                -- vim.api.nvim_create_autocmd("BufWritePre", {
+                --     pattern = "*",
+                --     callback = function(args)
+                --         require("conform").format({ bufnr = args.buf })
+                --     end,
+                -- })
             end
         },
         {
