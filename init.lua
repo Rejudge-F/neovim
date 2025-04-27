@@ -105,15 +105,6 @@ require("lazy").setup({
                     popup_border_style = "rounded",
                     enable_git_status = true,
                     enable_diagnostics = true,
-                    event_handlers = {
-                        {
-                            event = "git_event", -- 或者更具体的事件如 "git_commit", "git_push" 等
-                            handler = function()
-                                -- 刷新 neo-tree
-                                require("neo-tree.sources.manager").refresh("filesystem")
-                            end
-                        }
-                    },
                     default_component_configs = {
                         indent = {
                             indent_size = 2,
@@ -174,6 +165,36 @@ require("lazy").setup({
                 vim.g.neo_tree_window_picker_delay = 100 -- 毫秒
                 vim.keymap.set('n', '<leader>n', ':Neotree toggle<CR>', { noremap = true, silent = true })
             end
+        },
+        {
+            'akinsho/bufferline.nvim',
+            version = "*",
+            dependencies = 'nvim-tree/nvim-web-devicons',
+            opts = {
+                options = {
+                    mode = "buffers",
+                    numbers = "ordinal",
+                    close_command = "Bdelete! %d",
+                    offsets = {
+                        {
+                            filetype = "NvimTree",
+                            text = "File Explorer",
+                            highlight = "Directory",
+                            text_align = "left",
+                        },
+                    },
+                    color_icons = true,
+                    show_buffer_icons = true,
+                    show_buffer_close_icons = false,
+                    separator_style = "thin",
+                }
+            },
+            keys = {
+                { "<Tab>",      "<Cmd>BufferLineCycleNext<CR>",            desc = "Next buffer" },
+                { "<S-Tab>",    "<Cmd>BufferLineCyclePrev<CR>",            desc = "Previous buffer" },
+                { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>",            desc = "Pin buffer" },
+                { "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete non-pinned buffers" },
+            },
         },
         {
             "nvim-treesitter/nvim-treesitter",
