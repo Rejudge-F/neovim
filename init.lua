@@ -33,6 +33,7 @@ vim.cmd [[highlight ColorColumn ctermbg=233]]
 vim.cmd [[autocmd BufLeave * silent! update]]
 
 -- for diagnostics
+vim.o.updatetime = 300 -- 300 毫秒
 vim.api.nvim_create_autocmd("CursorHold", {
     callback = function()
         vim.diagnostic.open_float(nil, { focus = false })
@@ -384,17 +385,17 @@ require("lazy").setup({
                         },
                         format_on_save = {
                             lsp_fallback = true,
-                            async = true,
+                            async = false,
                             timeout_ms = 1000,
                         },
                     }
                 )
-                vim.api.nvim_create_autocmd("BufWritePre", {
-                    pattern = "*",
-                    callback = function(args)
-                        require("conform").format({ bufnr = args.buf })
-                    end,
-                })
+                -- vim.api.nvim_create_autocmd("BufWritePre", {
+                --     pattern = "*",
+                --     callback = function(args)
+                --         require("conform").format({ bufnr = args.buf })
+                --     end,
+                -- })
             end
         },
         {
@@ -460,24 +461,6 @@ require("lazy").setup({
                     },
                     mapping = cmp.mapping.preset.insert({
                         ["<CR>"] = cmp.mapping.confirm({ select = true }),
-                        ["<C-j>"] = cmp.mapping(function(fallback)
-                            if cmp.visible() then
-                                cmp.select_next_item()
-                            elseif luasnip.expand_or_jumpable() then
-                                luasnip.expand_or_jump()
-                            else
-                                fallback()
-                            end
-                        end, { "i", "s" }),
-                        ["<C-k>"] = cmp.mapping(function(fallback)
-                            if cmp.visible() then
-                                cmp.select_prev_item()
-                            elseif luasnip.jumpable(-1) then
-                                luasnip.jump(-1)
-                            else
-                                fallback()
-                            end
-                        end, { "i", "s" }),
                     }),
                     sources = cmp.config.sources({
                         { name = "nvim_lsp" },
@@ -496,6 +479,19 @@ require("lazy").setup({
                     },
                     thriftls = {},
                     pyright = {
+                        settings = {
+                            python = {
+                                analysis = {
+                                    diagnosticSeverityOverrides = {
+                                        reportOptionalMemberAccess = "none", -- 禁用可选成员访问问题
+                                        reportOptionalSubscript = "none",    -- 禁用可选下标问题
+                                        reportGeneralTypeIssues = "none",    -- 禁用一般类型问题
+                                        reportArgumentType = "none",         -- 禁用参数类型问题
+                                        reportCallIssue = "none",
+                                    },
+                                },
+                            },
+                        },
                     },
                     gopls = {},
                     rust_analyzer = {},
