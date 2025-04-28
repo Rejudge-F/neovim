@@ -866,6 +866,13 @@ require("lazy").setup({
             "solarnz/thrift.vim",
             ft = "thrift",
         },
+        {
+            'gorbit99/codewindow.nvim',
+            config = function()
+                require('codewindow').setup()
+                require('codewindow').apply_default_keybinds()
+            end,
+        },
     },
     install = { colorscheme = { "habamax" } },
     checker = { enabled = true },
