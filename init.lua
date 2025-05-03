@@ -867,11 +867,26 @@ require("lazy").setup({
             ft = "thrift",
         },
         {
-            'gorbit99/codewindow.nvim',
+            'gorbit99/codewindow.nvim', -- minimap
             config = function()
                 require('codewindow').setup()
                 require('codewindow').apply_default_keybinds()
             end,
+        },
+        {
+            "kdheepak/lazygit.nvim",
+            lazy = true,
+            cmd = {
+                "LazyGit",
+                "LazyGitConfig",
+                "LazyGitCurrentFile",
+                "LazyGitFilter",
+                "LazyGitFilterCurrentFile",
+            },
+            -- optional for floating window border decoration
+            dependencies = {
+                "nvim-lua/plenary.nvim",
+            },
         },
     },
     install = { colorscheme = { "habamax" } },
