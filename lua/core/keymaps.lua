@@ -1,0 +1,16 @@
+vim.g.mapleader = ';'
+vim.g.maplocalleader = '\''
+vim.api.nvim_set_keymap('x', '<leader>y', '"+y<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>h', '<C-w>h', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>j', '<C-w>j', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>k', '<C-w>k', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>l', '<C-w>l', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<', '<gv', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '>', '>gv', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', 'Q', 'gq', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'Q', 'gqap', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'sp', ':split<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'sv', ':vsplit<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'sc', '<C-w>c', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'so', '<C-w>o', { noremap = true, silent = true })
