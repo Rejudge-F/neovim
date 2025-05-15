@@ -20,16 +20,6 @@ return {
     },
     config = function()
         require("mason").setup()
-        require("mason-lspconfig").setup({
-            ensure_installed = {
-                "jsonls",
-                "pyright",
-                "gopls",
-                "lua_ls",
-                "thriftls",
-            },
-        })
-
 
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
@@ -65,16 +55,20 @@ return {
                 cmd = { "dart", "language-server", "--protocol=lsp" },
             },
             thriftls = {},
+            jdtls = {
+                cmd = { "jdtls" },
+            },
             pyright = {
                 settings = {
                     python = {
                         analysis = {
                             diagnosticSeverityOverrides = {
-                                reportOptionalMemberAccess = "none",         -- 禁用可选成员访问问题
-                                reportOptionalSubscript = "none",            -- 禁用可选下标问题
-                                reportGeneralTypeIssues = "none",            -- 禁用一般类型问题
-                                reportArgumentType = "none",                 -- 禁用参数类型问题
+                                reportOptionalMemberAccess = "none", -- 禁用可选成员访问问题
+                                reportOptionalSubscript = "none",    -- 禁用可选下标问题
+                                reportGeneralTypeIssues = "none",    -- 禁用一般类型问题
+                                reportArgumentType = "none",         -- 禁用参数类型问题
                                 reportCallIssue = "none",
+                                reportReturnType = "none",
                             },
                         },
                     },
