@@ -3,22 +3,19 @@ return {
     branch = "v3.x",
     dependencies = {
         "nvim-lua/plenary.nvim",
-        "nvim-tree/nvim-web-devicons", -- 注意：这里仍然使用 nvim-web-devicons
+        "nvim-tree/nvim-web-devicons",
         "MunifTanjim/nui.nvim",
         {
-            "s1n7ax/nvim-window-picker", -- for open_with_window_picker keymaps
+            "s1n7ax/nvim-window-picker",
             version = "2.*",
             config = function()
                 require("window-picker").setup({
                     filter_rules = {
                         include_current_win = false,
                         autoselect_one = true,
-                        -- filter using buffer options
                         bo = {
-                            -- if the file type is one of following, the window will be ignored
                             filetype = { "neo-tree", "neo-tree-popup", "notify" },
-                            -- if the buffer type is one of following, the window will be ignored
-                            buftype = { "terminal", "quickfix" },
+                            buftype = { "quickfix" },
                         },
                     },
                 })
@@ -36,24 +33,6 @@ return {
                     indent_size = 2,
                     padding = 1,
                 },
-                git_status = {
-                    symbols = {
-                        -- 更改 git 状态符号
-                        added     = "✚",
-                        deleted   = "✖",
-                        modified  = "",
-                        renamed   = "➜",
-                        untracked = "?",
-                        ignored   = "◌",
-                        unstaged  = "",
-                        staged    = "✓",
-                        conflict  = "",
-                    }
-                },
-            },
-            modified = {
-                symbol = "[+]",
-                highlight = "NeoTreeModified",
             },
             filesystem = {
                 filtered_items = {
@@ -68,6 +47,7 @@ return {
                         ".gitignore",
                         "*codebase*",
                         ".venv",
+                        "venv/"
                     },
                 },
                 follow_current_file = {
@@ -88,7 +68,7 @@ return {
             },
         })
 
-        vim.g.neo_tree_window_picker_delay = 100 -- 毫秒
+        vim.g.neo_tree_window_picker_delay = 30 -- 毫秒
         vim.keymap.set('n', '<leader>n', ':Neotree toggle<CR>', { noremap = true, silent = true })
     end
 }
