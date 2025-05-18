@@ -45,7 +45,7 @@ return {
         vim.api.nvim_set_keymap('n', '<leader>B',
             ':lua require"dap".set_breakpoint(vim.fn.input("Breakpoint condition: "))<CR>',
             { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', '<leader>dr', ':lua require"dap".repl.open()<CR>',
+        vim.api.nvim_set_keymap('n', '<leader>du', ':lua require"dap".repl.open()<CR>',
             { noremap = true, silent = true })
     end
 }

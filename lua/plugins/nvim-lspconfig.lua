@@ -70,10 +70,10 @@ return {
                     python = {
                         analysis = {
                             diagnosticSeverityOverrides = {
-                                reportOptionalMemberAccess = "none",         -- 禁用可选成员访问问题
-                                reportOptionalSubscript = "none",            -- 禁用可选下标问题
-                                reportGeneralTypeIssues = "none",            -- 禁用一般类型问题
-                                reportArgumentType = "none",                 -- 禁用参数类型问题
+                                reportOptionalMemberAccess = "none", -- 禁用可选成员访问问题
+                                reportOptionalSubscript = "none",    -- 禁用可选下标问题
+                                reportGeneralTypeIssues = "none",    -- 禁用一般类型问题
+                                reportArgumentType = "none",         -- 禁用参数类型问题
                                 reportCallIssue = "none",
                             },
                         },
