@@ -8,6 +8,17 @@ vim.api.nvim_create_autocmd("CursorHold", {
     end,
 })
 
+vim.api.nvim_create_autocmd("BufWritePost", {
+    pattern = { "go.mod", "go.sum" },
+    callback = function()
+        for _, client in pairs(vim.lsp.get_active_clients()) do
+            if client.name == "gopls" then
+                client.notify("workspace/didChangeConfiguration", { settings = {} })
+            end
+        end
+    end,
+})
+
 vim.cmd [[filetype plugin indent on]]
 vim.cmd [[syntax on]]
 vim.cmd [[highlight ColorColumn ctermbg=233]]
