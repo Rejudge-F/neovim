@@ -69,6 +69,7 @@ return {
                                 reportArgumentType = "none",         -- 禁用参数类型问题
                                 reportCallIssue = "none",
                                 reportReturnType = "none",
+                                reportAttributeAccessIssue = "none",
                             },
                         },
                     },

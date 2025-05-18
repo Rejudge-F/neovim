@@ -26,3 +26,15 @@ vim.opt.smartcase      = true
 vim.opt.backup         = false
 vim.opt.writebackup    = false
 vim.opt.swapfile       = false
+
+vim.diagnostic.config({
+    virtual_text = false, -- 禁用行内文本（如错误信息）
+    signs = true,         -- 启用左侧图标
+    underline = false,    -- 禁用下划线
+})
+
+local signs = { Error = "✗", Warn = "⚠", Hint = "󱧣", Info = "" }
+for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+end

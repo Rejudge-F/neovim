@@ -5,7 +5,7 @@ return {
         require("notify").setup({
             stages = "fade_in_slide_out",
             top_down = false,
-            timeout = 2000,
+            timeout = 5000,
             background_colour = "#000000",
         })
     end,
