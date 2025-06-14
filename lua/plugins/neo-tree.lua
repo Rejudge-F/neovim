@@ -62,7 +62,6 @@ return {
                     mappings = {
                         ["sv"] = "open_vsplit",
                         ["sp"] = "open_split",
-                        ["o"] = "open_with_window_picker",
                         ["<cr>"] = "open",
                     }
                 },
