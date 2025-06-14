@@ -5,6 +5,7 @@ return {
     config = function()
         require('lualine').setup({
             theme = 'auto',
+            extensions = { "neo-tree", "mason", "toggleterm", "trouble", "nvim-dap-ui", "quickfix", }
         })
     end
 }

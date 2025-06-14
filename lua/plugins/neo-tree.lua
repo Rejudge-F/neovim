@@ -47,7 +47,9 @@ return {
                         ".gitignore",
                         "*codebase*",
                         ".venv",
-                        "venv/"
+                        "venv/",
+                        "output",
+                        "output**",
                     },
                 },
                 follow_current_file = {
