@@ -96,7 +96,6 @@ return {
             nmap("gd", vim.lsp.buf.definition, "[LSP] Go to Definition")
             nmap("gy", vim.lsp.buf.type_definition, "[LSP] Type Definition")
             nmap("gi", vim.lsp.buf.implementation, "[LSP] Implementation")
-            nmap("gf", vim.lsp.buf.code_action, "[LSP] Code Action")
 
             vim.api.nvim_buf_create_user_command(bufnr, "Format", function()
                 vim.lsp.buf.format({ async = true })

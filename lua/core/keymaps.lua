@@ -14,3 +14,8 @@ vim.api.nvim_set_keymap('n', 'sp', ':split<CR>', { noremap = true, silent = true
 vim.api.nvim_set_keymap('n', 'sv', ':vsplit<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'sc', '<C-w>c', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', 'so', '<C-w>o', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>ln', function()
+    local filepath = vim.fn.expand('%')
+    local linenr = vim.fn.line('.')
+    vim.fn.setreg('+', string.format('%s:%d', filepath, linenr))
+end, { desc = "Show relative file path and line number" })
