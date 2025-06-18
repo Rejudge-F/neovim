@@ -13,6 +13,17 @@ return {
                     tabe = 't',
                     quit = 'q'
                 }
+            },
+            finder = {
+                keys = {
+                    vsplit = 'sv',
+                    split = 'sp',
+                    tabe = 't',
+                    quit = 'q'
+                }
+            },
+            symbol_in_winbar = {
+                enable = false,
             }
         })
         vim.keymap.set("n", "rn", ":Lspsaga rename<CR>", { noremap = true, silent = true })
