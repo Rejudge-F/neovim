@@ -4,6 +4,15 @@ return {
         require('lspsaga').setup({
             lightbulb = {
                 enable = false,
+            },
+            definition = {
+                keys = {
+                    edit = 'o',
+                    vsplit = 'sv',
+                    split = 'sp',
+                    tabe = 't',
+                    quit = 'q'
+                }
             }
         })
         vim.keymap.set("n", "rn", ":Lspsaga rename<CR>", { noremap = true, silent = true })
