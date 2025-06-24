@@ -2,6 +2,9 @@ return {
     'nvimdev/lspsaga.nvim',
     config = function()
         require('lspsaga').setup({
+            beacon = {
+                enable = true
+            },
             lightbulb = {
                 enable = false,
             },
