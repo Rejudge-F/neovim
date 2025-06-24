@@ -93,8 +93,6 @@ return {
                 vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
             end
 
-            nmap("gi", vim.lsp.buf.implementation, "[LSP] Implementation")
-
             vim.api.nvim_buf_create_user_command(bufnr, "Format", function()
                 vim.lsp.buf.format({ async = true })
             end, { desc = "Format current buffer with LSP" })

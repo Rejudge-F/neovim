@@ -5,7 +5,7 @@ return {
     config = function()
         require('lualine').setup({
             theme = 'auto',
-            extensions = { "neo-tree", "mason", "toggleterm", "trouble", "nvim-dap-ui", "quickfix", },
+            extensions = { "neo-tree", "mason", "toggleterm", "trouble", "nvim-dap-ui", "quickfix", "lazy", "trouble", },
             sections = {
                 lualine_a = { 'mode' },
                 lualine_b = { 'branch', 'diff', 'diagnostics' },

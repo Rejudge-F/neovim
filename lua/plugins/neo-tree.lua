@@ -48,6 +48,7 @@ return {
                         "*codebase*",
                         ".venv",
                         "venv/",
+                        "idl",
                         "output",
                         "output**",
                     },

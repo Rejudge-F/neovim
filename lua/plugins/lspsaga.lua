@@ -31,6 +31,7 @@ return {
         vim.keymap.set('n', '<leader>so', ':Lspsaga outline<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', '<leader>ca', ':Lspsaga code_action<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', 'gr', ':Lspsaga finder<CR>', { noremap = true, silent = true })
+        vim.keymap.set('n', 'gi', ':Lspsaga finder imp<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', 'go', ':Lspsaga outgoing_calls<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', 'gd', ':Lspsaga goto_definition<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', 'gtd', ':Lspsaga goto_type_definition<CR>', { noremap = true, silent = true })
