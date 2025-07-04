@@ -11,8 +11,8 @@ return {
             selection_chars = "ABCDEFGHJKLMNOPQRSTUVWXYZ",
             filter_rules = {
                 bo = {
-                    filetype = { "neo-tree", "neo-tree-popup", "notify", "quickfix" },
-                    buftype = { "quickfix" },
+                    filetype = { "neo-tree", "neo-tree-popup", "notify", "quickfix", "toggleterm" },
+                    buftype = { "quickfix", "terminal" },
                 },
             },
         })
