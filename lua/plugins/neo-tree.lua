@@ -13,6 +13,7 @@ return {
             popup_border_style = "rounded",
             enable_git_status = true,
             enable_diagnostics = true,
+            open_files_do_not_replace_types = { "terminal", "trouble", "qf", "nofile", "notify", "quickfix", },
             default_component_configs = {
                 indent = {
                     indent_size = 2,
@@ -46,6 +47,7 @@ return {
                 window = {
                     width = 30,
                     mappings = {
+                        ["s"] = "",
                         ["sv"] = "open_vsplit",
                         ["sp"] = "open_split",
                         ["<cr>"] = "open",

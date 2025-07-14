@@ -84,20 +84,18 @@ return {
             clear_dap_keymaps()
         end
 
+        vim.fn.sign_define('DapStopped',
+            { text = '', texthl = 'DapStopped', linehl = 'DapStopped', numhl = 'DapStopped' })
+
         vim.api.nvim_set_keymap('n', '<F5>', ':lua require"dap".continue()<CR>',
             { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', '<F10>', ':lua require"dap".step_over()<CR>',
+        vim.api.nvim_set_keymap('n', '<leader>bp', ':lua require"dap".toggle_breakpoint()<CR>',
             { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', '<F11>', ':lua require"dap".step_into()<CR>',
-            { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', '<F12>', ':lua require"dap".step_out()<CR>',
-            { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', '<leader>b', ':lua require"dap".toggle_breakpoint()<CR>',
-            { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', '<leader>B',
+        vim.api.nvim_set_keymap('n', '<leader>bc',
             ':lua require"dap".set_breakpoint(vim.fn.input("Breakpoint condition: "))<CR>',
             { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', '<leader>du', ':lua require"dap".repl.open()<CR>',
-            { noremap = true, silent = true })
+        vim.keymap.set('n', '<Leader>bl',
+            function() require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end)
+        vim.keymap.set('n', '<Leader>dr', function() require('dap').repl.open() end)
     end
 }

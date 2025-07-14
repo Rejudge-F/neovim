@@ -17,6 +17,7 @@ return {
                         python = ".venv/bin/python",
                     }),
                     require("neotest-go")({
+                        recursive_run = true
                     }),
                 }
             })

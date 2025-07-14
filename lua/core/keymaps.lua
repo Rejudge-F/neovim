@@ -2,6 +2,8 @@ vim.g.mapleader = ';'
 vim.g.maplocalleader = '\''
 vim.api.nvim_set_keymap('x', '<leader>y', '"+y<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', 'q', '<Nop>', { noremap = true, silent = true }) -- 取消 q 的宏录制功能
+vim.keymap.set('v', 'q', '<Nop>', { noremap = true, silent = true }) -- 取消 q 的宏录制功能
 vim.keymap.set("n", "<C-h>", "<C-w>h")
 vim.keymap.set("n", "<C-j>", "<C-w>j")
 vim.keymap.set("n", "<C-k>", "<C-w>k")
