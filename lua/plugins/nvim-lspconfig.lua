@@ -75,7 +75,13 @@ return {
                     },
                 },
             },
-            gopls = {},
+            gopls = {
+                settings = {
+                    gopls = {
+                        buildFlags = { "-tags=wireinject" }
+                    }
+                }
+            },
             rust_analyzer = {},
             lua_ls = {
                 settings = {
@@ -89,10 +95,6 @@ return {
         }
 
         local on_attach = function(_, bufnr)
-            local nmap = function(keys, func, desc)
-                vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
-            end
-
             vim.api.nvim_buf_create_user_command(bufnr, "Format", function()
                 vim.lsp.buf.format({ async = true })
             end, { desc = "Format current buffer with LSP" })

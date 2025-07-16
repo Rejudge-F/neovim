@@ -24,7 +24,7 @@ return {
                         ["ic"] = "@class.inner",
                     },
                     selection_modes = {
-                        ['@parameter.outer'] = 'v', ['@function.outer'] = 'V', ['@class.outer'] = '<c-v>',
+                        ['@parameter.outer'] = 'v', ['@function.outer'] = 'V', ['@class.outer'] = 'V',
                     },
                 },
                 move = {

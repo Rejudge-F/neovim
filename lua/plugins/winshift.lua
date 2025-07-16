@@ -49,13 +49,12 @@ return {
                         -- This table allows you to indicate to the window picker that a window
                         -- should be ignored if its buffer matches any of the following criteria.
                         cur_win = true, -- Filter out the current window
-                        floats = true, -- Filter out floating windows
-                        filetype = {}, -- List of ignored file types
-                        buftype = {}, -- List of ignored buftypes
-                        bufname = {}, -- List of vim regex patterns matching ignored buffer names
+                        floats = true,  -- Filter out floating windows
+                        filetype = {},  -- List of ignored file types
+                        buftype = {},   -- List of ignored buftypes
+                        bufname = {},   -- List of vim regex patterns matching ignored buffer names
                     },
                     ---A function used to filter the list of selectable windows.
-                    ---@param winids integer[] # The list of selectable window IDs.
                     ---@return integer[] filtered # The filtered list of window IDs.
                     filter_func = nil,
                 })
