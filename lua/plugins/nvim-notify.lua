@@ -3,7 +3,8 @@ return {
     config = function()
         vim.notify = require("notify")
         require("notify").setup({
-            stages = "fade_in_slide_out",
+            -- stages = "fade_in_slide_out",
+            -- stages = "wrapped-default",
             top_down = false,
             timeout = 5000,
         })
