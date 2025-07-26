@@ -38,6 +38,8 @@ return {
         vim.keymap.set('n', 'go', ':Lspsaga outgoing_calls<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', 'gd', ':Lspsaga goto_definition<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', 'gtd', ':Lspsaga goto_type_definition<CR>', { noremap = true, silent = true })
+        vim.keymap.set('n', ']e', ':Lspsaga diagnostic_jump_next<CR>', { noremap = true, silent = true })
+        vim.keymap.set('n', '[e', ':Lspsaga diagnostic_jump_next<CR>', { noremap = true, silent = true })
     end,
     dependencies = {
         'nvim-treesitter/nvim-treesitter', -- optional
