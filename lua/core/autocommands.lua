@@ -31,16 +31,16 @@ vim.api.nvim_create_autocmd("LspDetach", {
     end,
 })
 
-vim.api.nvim_create_autocmd("CursorMoved", {
-    callback = function()
-        for _, win in ipairs(vim.api.nvim_list_wins()) do
-            local config = vim.api.nvim_win_get_config(win)
-            if config.relative ~= "" then
-                vim.api.nvim_win_close(win, true)
-            end
-        end
-    end,
-})
+-- vim.api.nvim_create_autocmd("CursorMoved", {
+--     callback = function()
+--         for _, win in ipairs(vim.api.nvim_list_wins()) do
+--             local config = vim.api.nvim_win_get_config(win)
+--             if config.relative ~= "" then
+--                 vim.api.nvim_win_close(win, true)
+--             end
+--         end
+--     end,
+-- })
 
 
 vim.cmd [[filetype plugin indent on]]

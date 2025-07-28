@@ -14,7 +14,7 @@ return {
                 "hrsh7th/cmp-path",
                 "hrsh7th/cmp-cmdline",
                 "L3MON4D3/LuaSnip",
-                "saadparwaiz1/cmp_luasnip"
+                "saadparwaiz1/cmp_luasnip",
             },
         },
     },
@@ -30,9 +30,21 @@ return {
         require("luasnip.loaders.from_vscode").lazy_load()
 
         cmp.setup({
+            preselect = require('cmp').PreselectMode.Item, -- 总是高亮第一个
+            completion = {
+                completeopt = 'menu,menuone,noinsert',     -- Ensures the menu is shown and the first item is preselected
+            },
             snippet = {
                 expand = function(args)
                     luasnip.lsp_expand(args.body)
+                end,
+            },
+            formatting = {
+                format = function(entry, vim_item)
+                    if entry.completion_item then
+                        entry.completion_item.preselect = false
+                    end
+                    return vim_item
                 end,
             },
             mapping = cmp.mapping.preset.insert({
@@ -78,6 +90,10 @@ return {
             gopls = {
                 settings = {
                     gopls = {
+                        analyses = {
+                            unusedparams = true, -- 确保参数分析启用
+                        },
+                        -- staticcheck = true,
                         buildFlags = { "-tags=wireinject" }
                     }
                 }
