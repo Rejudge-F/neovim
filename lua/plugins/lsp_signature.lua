@@ -3,7 +3,7 @@ return {
     event = "LspAttach",
     config = function()
         require("lsp_signature").setup({
-            debug = true,
+            debug = false,
             bind = true,
             extra_trigger_chars = { "," }, -- 添加逗号作为额外触发字符
             hint_enable = false,
