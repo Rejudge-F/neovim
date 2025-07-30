@@ -2,11 +2,11 @@ vim.cmd [[autocmd BufLeave * silent! update]]
 
 -- for diagnostics
 vim.o.updatetime = 300 -- 300 毫秒
--- vim.api.nvim_create_autocmd("CursorHold", {
---     callback = function()
---         vim.diagnostic.open_float(nil, { focus = false })
---     end,
--- })
+vim.api.nvim_create_autocmd("CursorHold", {
+    callback = function()
+        vim.diagnostic.open_float(nil, { focus = false })
+    end,
+})
 
 vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = { "go.mod", "go.sum" },

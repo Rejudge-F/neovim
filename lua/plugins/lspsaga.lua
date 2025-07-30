@@ -40,6 +40,30 @@ return {
         vim.keymap.set('n', 'gtd', ':Lspsaga goto_type_definition<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', ']e', ':Lspsaga diagnostic_jump_next<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', '[e', ':Lspsaga diagnostic_jump_next<CR>', { noremap = true, silent = true })
+
+        local function with_beacon(fn)
+            return function()
+                vim.schedule(function()
+                    local beacon_width = 7
+                    local row = vim.fn.line('.') - 1
+                    local curson_index = vim.fn.col('.')
+                    local col_start = curson_index - beacon_width
+                    if col_start < 0 then
+                        col_start = 0
+                    end
+                    local col_end = curson_index + beacon_width
+                    if col_end > vim.fn.col('$') then
+                        col_end = vim.fn.col('$')
+                    end
+                    local width = col_end - col_start + 1
+                    require('lspsaga.beacon').jump_beacon({ row, col_start }, width)
+                end)
+                return fn()
+            end
+        end
+
+        vim.keymap.set("n", "<C-o>", with_beacon(function() return "<C-o>" end), { expr = true })
+        vim.keymap.set("n", "<C-i>", with_beacon(function() return "<C-i>" end), { expr = true })
     end,
     dependencies = {
         'nvim-treesitter/nvim-treesitter', -- optional
