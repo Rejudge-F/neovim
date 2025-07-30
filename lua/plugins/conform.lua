@@ -17,6 +17,7 @@ return {
                     lsp_fallback = true,
                     timeout_ms = 1000,
                 },
+                async = true,
             }
         )
         -- vim.api.nvim_create_autocmd("BufWritePre", {

@@ -44,18 +44,18 @@ return {
         local function with_beacon(fn)
             return function()
                 vim.schedule(function()
-                    local beacon_width = 7
+                    local beacon_width = 20
                     local row = vim.fn.line('.') - 1
                     local curson_index = vim.fn.col('.')
                     local col_start = curson_index - beacon_width
-                    if col_start < 0 then
+                    if col_start <= 0 then
                         col_start = 0
                     end
                     local col_end = curson_index + beacon_width
-                    if col_end > vim.fn.col('$') then
-                        col_end = vim.fn.col('$')
+                    if col_end >= vim.fn.col('$') then
+                        col_end = vim.fn.col('$') - 1
                     end
-                    local width = col_end - col_start + 1
+                    local width = col_end - col_start
                     require('lspsaga.beacon').jump_beacon({ row, col_start }, width)
                 end)
                 return fn()
