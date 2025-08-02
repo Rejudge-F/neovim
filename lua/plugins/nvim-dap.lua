@@ -96,6 +96,6 @@ return {
             { noremap = true, silent = true })
         vim.keymap.set('n', '<Leader>bl',
             function() require('dap').set_breakpoint(nil, nil, vim.fn.input('Log point message: ')) end)
-        vim.keymap.set('n', '<Leader>dr', function() require('dap').repl.open() end)
+        -- vim.keymap.set('n', '<Leader>dr', function() require('dap').repl.open() end)
     end
 }

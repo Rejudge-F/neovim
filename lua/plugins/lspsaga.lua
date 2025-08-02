@@ -40,6 +40,8 @@ return {
         vim.keymap.set('n', 'gtd', ':Lspsaga goto_type_definition<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', ']e', ':Lspsaga diagnostic_jump_next<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', '[e', ':Lspsaga diagnostic_jump_next<CR>', { noremap = true, silent = true })
+        vim.keymap.set('n', '<leader>db', ':Lspsaga show_buf_diagnostics<CR>', { noremap = true, silent = true })
+        vim.keymap.set('n', '<leader>dw', ':Lspsaga show_workspace_diagnostics<CR>', { noremap = true, silent = true })
 
         local function with_beacon(fn)
             return function()

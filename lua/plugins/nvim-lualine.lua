@@ -1,4 +1,3 @@
----@diagnostic disable: need-check-nil
 return {
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
