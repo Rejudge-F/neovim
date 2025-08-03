@@ -7,9 +7,10 @@ return {
         -- Only one of these is needed.
         "nvim-telescope/telescope.nvim",
     },
+    cmd = { "Neogit" },
     config = function()
         require("neogit").setup({
-            kind = "floating",     -- 设置 popup 默认类型为 floating
+            kind = "floating", -- 设置 popup 默认类型为 floating
             -- Floating window style
             floating = {
                 relative = "editor",

@@ -4,7 +4,7 @@ return {
         vim.notify = require("notify")
         require("notify").setup({
             -- stages = "fade_in_slide_out",
-            -- stages = "wrapped-default",
+            stages = "static",
             top_down = false,
             timeout = 5000,
         })
