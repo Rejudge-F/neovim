@@ -14,8 +14,12 @@ return {
                     dart = { "dart_format" },
                 },
                 format_on_save = {
-                    lsp_fallback = true,
-                    timeout_ms = 1000,
+                    -- I recommend these options. See :help conform.format for details.
+                    lsp_format = "fallback",
+                    timeout_ms = 500,
+                },
+                format_after_save = {
+                    lsp_format = "fallback",
                 },
                 async = true,
             }

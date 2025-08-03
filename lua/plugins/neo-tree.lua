@@ -63,9 +63,6 @@ return {
             },
         })
 
-        vim.api.nvim_create_user_command("NeoTreeGitRefresh", function()
-            require("neo-tree.sources.git.status").refresh()
-        end, {})
         vim.g.neo_tree_window_picker_delay = 30 -- 毫秒
         vim.keymap.set('n', '<leader>n', ':Neotree toggle<CR>', { noremap = true, silent = true })
     end

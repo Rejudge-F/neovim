@@ -6,7 +6,7 @@ return {
             -- stages = "fade_in_slide_out",
             stages = "static",
             top_down = false,
-            timeout = 5000,
+            timeout = 1000,
         })
     end,
 }
