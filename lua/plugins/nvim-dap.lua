@@ -70,17 +70,20 @@ return {
         end
 
         dap.listeners.after.event_initialized["dapui_config"] = function()
+            vim.cmd("Neotree close")
             dapui.open()
             set_dap_keymaps()
         end
 
         dap.listeners.before.event_terminated["dapui_config"] = function()
             dapui.close()
+            vim.cmd("Neotree")
             clear_dap_keymaps()
         end
 
         dap.listeners.before.event_exited["dapui_config"] = function()
             dapui.close()
+            vim.cmd("Neotree")
             clear_dap_keymaps()
         end
 
