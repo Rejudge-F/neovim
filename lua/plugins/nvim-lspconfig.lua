@@ -60,7 +60,6 @@ return {
         })
 
 
-        local lspconfig = require("lspconfig")
         local servers = {
             jsonls = {},
             dartls = {
@@ -120,7 +119,7 @@ return {
         for server, config in pairs(servers) do
             config.capabilities = capabilities
             config.on_attach = on_attach
-            lspconfig[server].setup(config)
+            vim.lsp.config(server, config)
         end
     end,
 }

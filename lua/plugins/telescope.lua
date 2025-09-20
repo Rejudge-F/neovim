@@ -70,6 +70,7 @@ return {
             { noremap = true, silent = true })
         vim.keymap.set("n", "<leader>p", ":Telescope projects<CR>",
             { noremap = true, silent = true })
+        vim.keymap.set("n", "<leader>bf", ":Telescope buffers<CR>")
         require("telescope").load_extension("projects")
     end
 }

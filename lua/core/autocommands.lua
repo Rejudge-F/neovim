@@ -19,17 +19,17 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     end,
 })
 
-vim.api.nvim_create_autocmd("LspDetach", {
-    callback = function(args)
-        local client_id = args.data.client_id
-        local client = vim.lsp.get_client_by_id(client_id)
-        if client then
-            vim.defer_fn(function()
-                vim.cmd("LspStart " .. client.name)
-            end, 1000)
-        end
-    end,
-})
+-- vim.api.nvim_create_autocmd("LspDetach", {
+--     callback = function(args)
+--         local client_id = args.data.client_id
+--         local client = vim.lsp.get_client_by_id(client_id)
+--         if client then
+--             vim.defer_fn(function()
+--                 vim.cmd("LspStart " .. client.name)
+--             end, 1000)
+--         end
+--     end,
+-- })
 
 -- vim.api.nvim_create_autocmd("CursorMoved", {
 --     callback = function()

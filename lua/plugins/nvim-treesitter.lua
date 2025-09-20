@@ -1,7 +1,7 @@
 return {
     "nvim-treesitter/nvim-treesitter",
-    run = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile", "BufEnter" },
+    build = ":TSUpdate",
+    event = { "BufReadPost", "BufNewFile" },
     config = function()
         require("nvim-treesitter.configs").setup({
             ensure_installed = { "c", "cpp", "lua", "python", "javascript", "typescript", "go", "rust" },
@@ -9,9 +9,6 @@ return {
                 enable = true,
             },
             indent = {
-                enable = true,
-            },
-            fold = {
                 enable = true,
             },
             textobjects = {
