@@ -27,7 +27,7 @@ return {
                 }
             },
             symbol_in_winbar = {
-                enable = false,
+                enable = true,
             }
         })
         vim.keymap.set("n", "rn", ":Lspsaga rename<CR>", { noremap = true, silent = true })

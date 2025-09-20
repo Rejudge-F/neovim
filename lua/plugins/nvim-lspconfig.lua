@@ -119,7 +119,7 @@ return {
         for server, config in pairs(servers) do
             config.capabilities = capabilities
             config.on_attach = on_attach
-            vim.lsp.config(server, config)
+            vim.lsp.enable(server, config)
         end
     end,
 }
