@@ -130,3 +130,9 @@ bindkey '^L' autosuggest-accept
 
 [ -s "${HOME}/.g/env" ] && \. "${HOME}/.g/env"  # g shell setup
 
+
+## [Completion]
+## Completion scripts setup. Remove the following line to uninstall
+[[ -f /Users/bytedance/.dart-cli-completion/zsh-config.zsh ]] && . /Users/bytedance/.dart-cli-completion/zsh-config.zsh || true
+## [/Completion]
+
