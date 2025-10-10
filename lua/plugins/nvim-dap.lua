@@ -2,7 +2,6 @@ return {
     "mfussenegger/nvim-dap",
     dependencies = {
         "rcarriga/nvim-dap-ui",
-        "mfussenegger/nvim-dap-python",
         "leoluz/nvim-dap-go",
     },
     config = function()
@@ -21,7 +20,6 @@ return {
                 return "python3"
             end
         end
-        require("dap-python").setup(get_python_path())
 
         -- Go
         require("dap-go").setup({
