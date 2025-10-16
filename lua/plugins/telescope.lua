@@ -1,6 +1,6 @@
 return {
     "nvim-telescope/telescope.nvim",
-    branch = "master",  -- 使用 master 分支获取废弃 API 修复
+    branch = "master", -- 使用 master 分支获取废弃 API 修复
     dependencies = {
         "nvim-lua/plenary.nvim" },
     config = function()
@@ -67,7 +67,7 @@ return {
             { noremap = true, silent = true })
         vim.keymap.set("n", "<leader>ss", ":Telescope live_grep<CR>",
             { noremap = true, silent = true })
-        vim.keymap.set("n", "<leader>p", ":Telescope neovim-project discover<CR>",  -- 使用新的项目管理
+        vim.keymap.set("n", "<leader>p", ":Telescope neovim-project discover<CR>", -- 使用新的项目管理
             { noremap = true, silent = true })
         vim.keymap.set("n", "<leader>bf", ":Telescope buffers<CR>")
     end

@@ -7,7 +7,7 @@ return {
             linehl                       = false,
             word_diff                    = false,
             watch_gitdir                 = {
-                interval = 100,
+                interval = 1000,  -- 优化：从 100ms 改为 1000ms，减少 CPU 占用
                 follow_files = true
             },
             attach_to_untracked          = true,
@@ -22,7 +22,8 @@ return {
             },
             current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
             sign_priority                = 6,
-            update_debounce              = 100,
+            update_debounce              = 300,  -- 优化：从 100ms 改为 300ms，减少更新频率
+
             status_formatter             = nil,
             max_file_length              = 40000,
             preview_config               = {

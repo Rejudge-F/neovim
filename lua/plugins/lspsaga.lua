@@ -40,7 +40,7 @@ return {
         vim.keymap.set('n', 'gd', ':Lspsaga goto_definition<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', 'gtd', ':Lspsaga goto_type_definition<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', ']e', ':Lspsaga diagnostic_jump_next<CR>', { noremap = true, silent = true })
-        vim.keymap.set('n', '[e', ':Lspsaga diagnostic_jump_next<CR>', { noremap = true, silent = true })
+        vim.keymap.set('n', '[e', ':Lspsaga diagnostic_jump_prev<CR>', { noremap = true, silent = true })  -- 修复：应该是 prev
         vim.keymap.set('n', '<leader>db', ':Lspsaga show_buf_diagnostics<CR>', { noremap = true, silent = true })
         vim.keymap.set('n', '<leader>dw', ':Lspsaga show_workspace_diagnostics<CR>', { noremap = true, silent = true })
 

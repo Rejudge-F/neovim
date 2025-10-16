@@ -1,5 +1,6 @@
 return {
     "akinsho/toggleterm.nvim",
+    cmd = { "ToggleTerm" },  -- 添加懒加载：只在命令触发时加载
     config = function()
         require("toggleterm").setup {
             shade_terminals = true,

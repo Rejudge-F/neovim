@@ -1,11 +1,11 @@
 return {
-    {
-        'nvim-flutter/flutter-tools.nvim',
-        requires = {
-            'nvim-lua/plenary.nvim',
-            'stevearc/dressing.nvim', -- optional for vim.ui.select
-        },
-        config = function()
+    'nvim-flutter/flutter-tools.nvim',
+    ft = { "dart" },  -- 添加懒加载，只在 Dart 文件时加载
+    dependencies = {  -- 修复：requires → dependencies
+        'nvim-lua/plenary.nvim',
+        'stevearc/dressing.nvim', -- optional for vim.ui.select
+    },
+    config = function()
             require("flutter-tools").setup({
                 debugger = { enabled = true },
                 device = { show_emulators = true },
@@ -23,5 +23,4 @@ return {
                 }
             })
         end
-    }
 }

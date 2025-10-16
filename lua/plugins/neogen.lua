@@ -1,6 +1,7 @@
 return {
     "danymat/neogen",
-    requires = "nvim-treesitter/nvim-treesitter",
+    dependencies = "nvim-treesitter/nvim-treesitter",  -- 修复：requires → dependencies
+    cmd = { "Neogen" },  -- 添加懒加载
     config = function()
         require("neogen").setup({
             enabled = true,
