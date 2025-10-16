@@ -1,55 +1,26 @@
 return {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
     build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
+    dependencies = {
+        "nvim-treesitter/nvim-treesitter-textobjects",
+    },
     config = function()
-        require("nvim-treesitter.configs").setup({
-            ensure_installed = { "c", "cpp", "lua", "python", "javascript", "typescript", "go", "rust" },
-            highlight = {
-                enable = true,
-            },
-            indent = {
-                enable = true,
-            },
-            textobjects = {
-                select = {
-                    enable = true,
-                    lookahead = true,
-                    keymaps = {
-                        ["af"] = "@function.outer",
-                        ["if"] = "@function.inner",
-                        ["ac"] = "@class.outer",
-                        ["ic"] = "@class.inner",
-                    },
-                    selection_modes = {
-                        ['@parameter.outer'] = 'v', ['@function.outer'] = 'V', ['@class.outer'] = 'V',
-                    },
-                },
-                move = {
-                    enable = true,
-                    set_jumps = true, -- whether to set jumps in the jumplist
-                    goto_next_start = {
-                        ["]m"] = "@function.outer",
-                        ["]c"] = { query = "@class.outer", desc = "Next class start" },
-                        --
-                        ["]o"] = "@loop.*",
-                        ["]s"] = { query = "@local.scope", query_group = "locals", desc = "Next scope" },
-                        ["]z"] = { query = "@fold", query_group = "folds", desc = "Next fold" },
-                    },
-                    goto_next_end = {
-                        ["]M"] = "@function.outer",
-                        ["]C"] = "@class.outer",
-                    },
-                    goto_previous_start = {
-                        ["[m"] = "@function.outer",
-                        ["[c"] = "@class.outer",
-                    },
-                    goto_previous_end = {
-                        ["[M"] = "@function.outer",
-                        ["[C"] = "@class.outer",
-                    },
-                },
-            },
+        -- 为所有支持的文件类型启用 treesitter highlight
+        vim.api.nvim_create_autocmd("FileType", {
+            pattern = "*",
+            callback = function()
+                pcall(vim.treesitter.start)
+            end,
+        })
+
+        -- 禁用传统的 vim 语法高亮，避免冲突
+        vim.api.nvim_create_autocmd("FileType", {
+            pattern = "*",
+            callback = function()
+                vim.opt_local.syntax = ""
+            end,
         })
     end
 }

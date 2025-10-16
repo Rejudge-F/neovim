@@ -1,6 +1,6 @@
 vim.opt.encoding       = 'utf-8'
 vim.opt.guicursor      = 'n-v-c-i:block'
--- vim.opt.termguicolors  = true
+vim.opt.termguicolors  = true
 vim.opt.sidescrolloff  = 15
 vim.opt.showmatch      = true
 vim.opt.undofile       = true
