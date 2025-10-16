@@ -1,8 +1,23 @@
 vim.cmd [[autocmd BufLeave * silent! update]]
 
 -- for diagnostics - 优化性能
-vim.o.updatetime = 1000 -- 1 秒，减少触发频率
--- 移除 CursorHold 自动弹出诊断 - 会影响性能，需要时手动查看
+vim.o.updatetime = 500 -- 500ms，平衡性能和响应速度
+
+-- 光标停留时自动显示诊断信息
+vim.api.nvim_create_autocmd("CursorHold", {
+    callback = function()
+        -- 只在有诊断信息时才显示
+        local opts = {
+            focusable = false,
+            close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+            border = 'rounded',
+            source = 'always',
+            prefix = ' ',
+            scope = 'cursor',
+        }
+        vim.diagnostic.open_float(nil, opts)
+    end,
+})
 
 vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = { "go.mod", "go.sum" },

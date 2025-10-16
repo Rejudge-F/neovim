@@ -1,7 +1,8 @@
+vim.keymap.set('n', '<leader>n', ':Neotree toggle<CR>', { noremap = true, silent = true })
 return {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
-    cmd = { "Neotree" },  -- 添加懒加载：只在命令触发时加载
+    cmd = { "Neotree" }, -- 添加懒加载：只在命令触发时加载
     dependencies = {
         "nvim-lua/plenary.nvim",
         "nvim-tree/nvim-web-devicons",
@@ -65,6 +66,5 @@ return {
         })
 
         vim.g.neo_tree_window_picker_delay = 30 -- 毫秒
-        vim.keymap.set('n', '<leader>n', ':Neotree toggle<CR>', { noremap = true, silent = true })
     end
 }

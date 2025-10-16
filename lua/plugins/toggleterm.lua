@@ -1,6 +1,19 @@
+vim.api.nvim_set_keymap('n', '<leader>t', ':ToggleTerm<CR>',
+    { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>',
+    { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-1>', ':1ToggleTerm<CR>',
+    { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-2>', ':2ToggleTerm<CR>',
+    { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-3>', ':3ToggleTerm<CR>',
+    { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-4>', ':4ToggleTerm<CR>',
+    { noremap = true, silent = true })
+
 return {
     "akinsho/toggleterm.nvim",
-    cmd = { "ToggleTerm" },  -- 添加懒加载：只在命令触发时加载
+    cmd = { "ToggleTerm" }, -- 添加懒加载：只在命令触发时加载
     config = function()
         require("toggleterm").setup {
             shade_terminals = true,
@@ -9,18 +22,6 @@ return {
             persist_size = true,
             direction = 'horizontal',
         }
-        vim.api.nvim_set_keymap('n', '<leader>t', ':ToggleTerm<CR>',
-            { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>',
-            { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', '<C-1>', ':1ToggleTerm<CR>',
-            { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', '<C-2>', ':2ToggleTerm<CR>',
-            { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', '<C-3>', ':3ToggleTerm<CR>',
-            { noremap = true, silent = true })
-        vim.api.nvim_set_keymap('n', '<C-4>', ':4ToggleTerm<CR>',
-            { noremap = true, silent = true })
         function _G.toggle_term_height()
             local winid = vim.api.nvim_get_current_win()
             local cur_height = vim.api.nvim_win_get_height(winid)
