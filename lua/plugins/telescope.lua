@@ -70,5 +70,7 @@ return {
         vim.keymap.set("n", "<leader>p", ":Telescope neovim-project discover<CR>", -- 使用新的项目管理
             { noremap = true, silent = true })
         vim.keymap.set("n", "<leader>bf", ":Telescope buffers<CR>")
+        vim.keymap.set("n", "<leader>th", ":Telescope colorscheme<CR>",
+            { noremap = true, silent = true, desc = "Switch colorscheme" })
     end
 }

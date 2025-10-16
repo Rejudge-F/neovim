@@ -15,7 +15,22 @@ return {
             popup_border_style = "rounded",
             enable_git_status = true,
             enable_diagnostics = true,
+            enable_refresh_on_write = true, -- 保存文件时自动刷新
             open_files_do_not_replace_types = { "terminal", "trouble", "qf", "nofile", "notify", "quickfix", },
+            event_handlers = {
+                {
+                    event = "neo_tree_buffer_enter",
+                    handler = function()
+                        vim.cmd("setlocal relativenumber")
+                    end,
+                },
+                {
+                    event = "git_event",
+                    handler = function()
+                        require("neo-tree.sources.manager").refresh("filesystem")
+                    end,
+                },
+            },
             default_component_configs = {
                 indent = {
                     indent_size = 2,
@@ -66,5 +81,27 @@ return {
         })
 
         vim.g.neo_tree_window_picker_delay = 30 -- 毫秒
+
+        -- 添加自动刷新命令：当焦点回到 nvim 时刷新 neo-tree
+        vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+            pattern = "*",
+            callback = function()
+                if vim.fn.getcmdwintype() == "" then
+                    vim.cmd("checktime")
+                end
+            end,
+        })
+
+        -- 当检测到文件变化时，刷新 neo-tree
+        vim.api.nvim_create_autocmd({ "FileChangedShellPost" }, {
+            pattern = "*",
+            callback = function()
+                local manager = require("neo-tree.sources.manager")
+                local state = manager.get_state("filesystem")
+                if state and state.tree then
+                    manager.refresh("filesystem")
+                end
+            end,
+        })
     end
 }
