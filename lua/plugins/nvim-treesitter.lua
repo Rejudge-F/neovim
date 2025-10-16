@@ -8,18 +8,14 @@ return {
     },
     config = function()
         -- 为所有支持的文件类型启用 treesitter highlight
-        vim.api.nvim_create_autocmd("FileType", {
-            pattern = "*",
-            callback = function()
-                pcall(vim.treesitter.start)
-            end,
-        })
+        -- 只为有 parser 的文件类型启用
+        local enabled_fts = { "c", "cpp", "lua", "python", "javascript", "typescript", "go", "rust", "java", "bash", "json", "yaml", "toml", "markdown" }
 
-        -- 禁用传统的 vim 语法高亮，避免冲突
         vim.api.nvim_create_autocmd("FileType", {
-            pattern = "*",
+            pattern = enabled_fts,
             callback = function()
-                vim.opt_local.syntax = ""
+                vim.treesitter.start()
+                vim.opt_local.syntax = ""  -- 禁用传统语法高亮
             end,
         })
     end

@@ -1,8 +1,8 @@
 return {
     "nvim-telescope/telescope.nvim",
-    tag = "0.1.8",
+    branch = "master",  -- 使用 master 分支获取废弃 API 修复
     dependencies = {
-        "nvim-lua/plenary.nvim", "ahmedkhalf/project.nvim" },
+        "nvim-lua/plenary.nvim" },
     config = function()
         local actions = require("telescope.actions")
         local action_state = require("telescope.actions.state")
@@ -63,14 +63,12 @@ return {
                 }
             }
         })
-        require('telescope').load_extension('projects')
         vim.keymap.set("n", "<leader>f", ":Telescope find_files<CR>",
             { noremap = true, silent = true })
         vim.keymap.set("n", "<leader>ss", ":Telescope live_grep<CR>",
             { noremap = true, silent = true })
-        vim.keymap.set("n", "<leader>p", ":Telescope projects<CR>",
+        vim.keymap.set("n", "<leader>p", ":Telescope neovim-project discover<CR>",  -- 使用新的项目管理
             { noremap = true, silent = true })
         vim.keymap.set("n", "<leader>bf", ":Telescope buffers<CR>")
-        require("telescope").load_extension("projects")
     end
 }

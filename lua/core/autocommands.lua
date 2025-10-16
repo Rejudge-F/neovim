@@ -1,17 +1,13 @@
 vim.cmd [[autocmd BufLeave * silent! update]]
 
--- for diagnostics
-vim.o.updatetime = 300 -- 300 毫秒
-vim.api.nvim_create_autocmd("CursorHold", {
-    callback = function()
-        vim.diagnostic.open_float(nil, { focus = false })
-    end,
-})
+-- for diagnostics - 优化性能
+vim.o.updatetime = 1000 -- 1 秒，减少触发频率
+-- 移除 CursorHold 自动弹出诊断 - 会影响性能，需要时手动查看
 
 vim.api.nvim_create_autocmd("BufWritePost", {
     pattern = { "go.mod", "go.sum" },
     callback = function()
-        for _, client in pairs(vim.lsp.get_active_clients()) do
+        for _, client in pairs(vim.lsp.get_clients()) do
             if client.name == "gopls" then
                 client.notify("workspace/didChangeConfiguration", { settings = {} })
             end
@@ -44,5 +40,5 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 
 
 vim.cmd [[filetype plugin indent on]]
-vim.cmd [[syntax on]]
+-- vim.cmd [[syntax on]]  -- 已由 treesitter 替代，不需要
 vim.cmd [[highlight ColorColumn ctermbg=233]]
