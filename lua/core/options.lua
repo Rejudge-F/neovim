@@ -1,8 +1,8 @@
 vim.opt.encoding       = 'utf-8'
 vim.opt.guicursor      = 'n-v-c-i:block'
 vim.opt.termguicolors  = true
-vim.opt.clipboard      = 'unnamedplus'  -- 使用系统剪贴板
-vim.opt.timeoutlen     = 300            -- 减少键位映射等待时间（毫秒），默认1000
+-- vim.opt.clipboard      = 'unnamedplus'  -- 使用系统剪贴板
+vim.opt.timeoutlen     = 300 -- 减少键位映射等待时间（毫秒），默认1000
 vim.opt.sidescrolloff  = 15
 vim.opt.showmatch      = true
 vim.opt.undofile       = true

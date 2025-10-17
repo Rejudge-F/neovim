@@ -3,6 +3,7 @@ return {
     dependencies = {
         "leafo/magick",
     },
+    enabled = false,
     config = function()
         require("image").setup({
             backend = "kitty", -- 可选: kitty, ueberzug, kitty
