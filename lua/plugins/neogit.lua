@@ -19,6 +19,10 @@ return {
                 style = "minimal",
                 border = "rounded",
             },
+            -- 配置 commit view 使用 tab，避免被主 floating 窗口遮挡
+            commit_view = {
+                kind = "tab", -- 使用新标签页显示 commit 内容
+            },
         })
     end
 }
