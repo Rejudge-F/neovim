@@ -20,7 +20,7 @@ return {
                     "-parallel=10",
                 },
                 testify_enabled = false, -- 禁用 testify，因为项目不使用它
-                dap_go_enabled = false,  -- 如果不需要 DAP 调试，可以禁用
+                dap_go_enabled = true,   -- 启用 DAP 调试，可以直接调试测试用例
             }
             require("neotest").setup({
                 adapters = {

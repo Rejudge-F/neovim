@@ -1,6 +1,6 @@
 return {
     "neovim/nvim-lspconfig",
-    event = "BufReadPre",  -- 只在读取文件前加载
+    event = "BufReadPre", -- 只在读取文件前加载
     dependencies = {
         { "williamboman/mason.nvim", config = true },
         "williamboman/mason-lspconfig.nvim",
@@ -19,11 +19,21 @@ return {
         },
     },
     config = function()
-        require("mason").setup()
+        -- 1. 配置 Mason
+        require("mason").setup({
+            ui = {
+                border = "rounded",
+                icons = {
+                    package_installed = "✓",
+                    package_pending = "➜",
+                    package_uninstalled = "✗"
+                }
+            }
+        })
 
         local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-
+        -- 2. 配置补全
         local cmp = require("cmp")
         local luasnip = require("luasnip")
 
@@ -120,16 +130,63 @@ return {
             bashls = {},
         }
 
-        local on_attach = function(_, bufnr)
+        -- 3. 增强的 on_attach 函数（作为 lspsaga 的备用）
+        local on_attach = function(client, bufnr)
+            -- 定义缓冲区局部快捷键
+            local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+            local opts = { noremap = true, silent = true }
+
+            -- 格式化命令
             vim.api.nvim_buf_create_user_command(bufnr, "Format", function()
                 vim.lsp.buf.format({ async = true })
             end, { desc = "Format current buffer with LSP" })
+
+            -- 文档高亮已禁用（光标下同一单词高亮功能）
+            -- 如需启用，取消注释以下代码
+            -- if client.server_capabilities.documentHighlightProvider then
+            --     vim.api.nvim_create_augroup("lsp_document_highlight", { clear = false })
+            --     vim.api.nvim_clear_autocmds({ buffer = bufnr, group = "lsp_document_highlight" })
+            --     vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+            --         buffer = bufnr,
+            --         group = "lsp_document_highlight",
+            --         callback = vim.lsp.buf.document_highlight,
+            --     })
+            --     vim.api.nvim_create_autocmd({ "CursorMoved" }, {
+            --         buffer = bufnr,
+            --         group = "lsp_document_highlight",
+            --         callback = vim.lsp.buf.clear_references,
+            --     })
+            -- end
         end
 
-        for server, config in pairs(servers) do
-            config.capabilities = capabilities
-            config.on_attach = on_attach
-            vim.lsp.enable(server, config)
+        -- 4. 配置 mason-lspconfig 自动安装和设置
+        -- 只自动安装那些在 mason 中可用的服务器
+        local mason_servers = {
+            "jsonls", "clangd", "pyright", "gopls",
+            "rust_analyzer", "lua_ls", "bashls"
+        }
+
+        require("mason-lspconfig").setup({
+            -- 自动安装这些 LSP 服务器
+            ensure_installed = mason_servers,
+            -- 自动安装打开文件类型对应的 LSP
+            automatic_installation = false, -- 改为 false，避免尝试安装不存在的服务器
+        })
+
+        -- 5. 使用 Neovim 0.11+ 的新 API 配置 LSP 服务器
+        -- 参考: :help lspconfig-nvim-0.11
+        for server_name, server_config in pairs(servers) do
+            -- 合并配置
+            local config = vim.tbl_deep_extend("force", {
+                capabilities = capabilities,
+                on_attach = on_attach,
+            }, server_config)
+
+            -- 使用新的 vim.lsp.config API
+            vim.lsp.config[server_name] = config
+
+            -- 启用 LSP 服务器
+            vim.lsp.enable(server_name)
         end
 
         -- Auto-restart gopls when go.mod or go.sum changes

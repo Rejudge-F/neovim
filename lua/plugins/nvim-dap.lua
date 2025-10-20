@@ -33,6 +33,43 @@ return {
             },
         })
 
+        -- Python adapter 配置
+        dap.adapters.python = {
+            type = 'executable',
+            command = get_python_path(),
+            args = { '-m', 'debugpy.adapter' },
+        }
+
+        -- Python 调试配置
+        dap.configurations.python = {
+            {
+                type = 'python',
+                request = 'launch',
+                name = "Launch file",
+                program = "${file}",
+                pythonPath = get_python_path,
+            },
+            {
+                type = 'python',
+                request = 'launch',
+                name = "Launch file with args",
+                program = "${file}",
+                args = function()
+                    local args_string = vim.fn.input('Arguments: ')
+                    return vim.split(args_string, " +")
+                end,
+                pythonPath = get_python_path,
+            },
+            {
+                type = 'python',
+                request = 'launch',
+                name = "Launch pytest",
+                module = "pytest",
+                args = { "${file}", "-v" },
+                pythonPath = get_python_path,
+            },
+        }
+
         -- ========== 2) UI 布局（调试专用 tab 内打开）==========
         dapui.setup({
             layouts = {

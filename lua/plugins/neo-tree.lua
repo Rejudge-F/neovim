@@ -1,8 +1,10 @@
-vim.keymap.set('n', '<leader>n', ':Neotree toggle<CR>', { noremap = true, silent = true })
 return {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
     cmd = { "Neotree" }, -- 添加懒加载：只在命令触发时加载
+    keys = {
+        { "<leader>n", mode = "n" },
+    },
     dependencies = {
         "nvim-lua/plenary.nvim",
         "nvim-tree/nvim-web-devicons",
@@ -10,6 +12,9 @@ return {
         "s1n7ax/nvim-window-picker",
     },
     config = function()
+        -- 定义快捷键（在插件加载后）
+        vim.keymap.set('n', '<leader>n', ':Neotree toggle<CR>',
+            { noremap = true, silent = true, desc = "Toggle Neo-tree" })
         require("neo-tree").setup({
             close_if_last_window = true,
             popup_border_style = "rounded",

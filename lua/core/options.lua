@@ -7,9 +7,10 @@ vim.opt.sidescrolloff  = 15
 vim.opt.showmatch      = true
 vim.opt.undofile       = true
 vim.opt.undodir        = vim.fn.expand('~/.config/nvim/undo/')
-vim.opt.foldmethod     = 'expr'
-vim.opt.foldexpr       = 'nvim_treesitter#foldexpr()'
-vim.opt.foldlevelstart = 99
+-- 注意：折叠配置已移至 nvim-treesitter.lua 和 nvim-ufo.lua
+-- vim.opt.foldmethod     = 'expr'
+-- vim.opt.foldexpr       = 'nvim_treesitter#foldexpr()'
+-- vim.opt.foldlevelstart = 99
 vim.opt.wildmenu       = true
 vim.opt.wildmode       = { 'longest:list', 'full' }
 vim.opt.vb             = true

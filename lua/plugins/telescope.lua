@@ -64,12 +64,15 @@ return {
             }
         })
         vim.keymap.set("n", "<leader>f", ":Telescope find_files<CR>",
-            { noremap = true, silent = true })
+            { noremap = true, silent = true, desc = "Find files" })
         vim.keymap.set("n", "<leader>ss", ":Telescope live_grep<CR>",
-            { noremap = true, silent = true })
+            { noremap = true, silent = true, desc = "Live grep" })
         vim.keymap.set("n", "<leader>p", ":Telescope neovim-project discover<CR>", -- 使用新的项目管理
-            { noremap = true, silent = true })
-        vim.keymap.set("n", "<leader>bf", ":Telescope buffers<CR>")
+            { noremap = true, silent = true, desc = "Find projects" })
+        vim.keymap.set("n", "<leader>bf", ":Telescope buffers<CR>",
+            { noremap = true, silent = true, desc = "Find buffers" })
+        vim.keymap.set("n", "<leader>fr", ":Telescope frecency<CR>",
+            { noremap = true, silent = true, desc = "Frecency files" })
         vim.keymap.set("n", "<leader>th", ":Telescope colorscheme<CR>",
             { noremap = true, silent = true, desc = "Switch colorscheme" })
     end

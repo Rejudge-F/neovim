@@ -20,8 +20,13 @@ setopt AUTO_CD
 setopt CORRECT
 setopt INTERACTIVE_COMMENTS
 
+# Enable colors for ls (macOS)
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagaced
+
 # Aliases
 alias vim=nvim
+alias ls='ls -G'
 
 # g shell setup
 [ -s "${HOME}/.g/env" ] && \. "${HOME}/.g/env"
@@ -56,6 +61,9 @@ zinit ice wait lucid atinit"
 zinit light zdharma-continuum/null
 
 # Load plugins with turbo mode (deferred/lazy loading)
+zinit ice wait lucid
+zinit light zsh-users/zsh-completions
+
 zinit ice wait lucid atload"_zsh_autosuggest_start"
 zinit light zsh-users/zsh-autosuggestions
 
@@ -68,6 +76,18 @@ zinit light zsh-users/zsh-autosuggestions
 # ============================================
 # Completion Configuration
 # ============================================
+
+# Enable completion system options
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' list-colors "${(s.:.)LSCOLORS}"
+zstyle ':completion:*' special-dirs true
+zstyle ':completion:*' squeeze-slashes true
+
+# Fuzzy matching of completions for when you mistype them
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
 
 # Dart CLI completion
 [[ -f /Users/bytedance/.dart-cli-completion/zsh-config.zsh ]] && . /Users/bytedance/.dart-cli-completion/zsh-config.zsh || true
