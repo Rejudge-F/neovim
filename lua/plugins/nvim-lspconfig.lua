@@ -131,5 +131,23 @@ return {
             config.on_attach = on_attach
             vim.lsp.enable(server, config)
         end
+
+        -- Auto-restart gopls when go.mod or go.sum changes
+        vim.api.nvim_create_autocmd({ "BufWritePost", "FileChangedShellPost" }, {
+            pattern = { "go.mod", "go.sum" },
+            callback = function()
+                -- Find all gopls clients
+                for _, client in ipairs(vim.lsp.get_clients({ name = "gopls" })) do
+                    -- Restart the gopls client
+                    vim.schedule(function()
+                        client.stop()
+                        vim.defer_fn(function()
+                            vim.cmd("edit") -- Reload current buffer to trigger LSP reattach
+                        end, 500)
+                    end)
+                end
+            end,
+            desc = "Auto-restart gopls when go.mod or go.sum changes",
+        })
     end,
 }

@@ -19,16 +19,16 @@ vim.api.nvim_create_autocmd("CursorHold", {
     end,
 })
 
-vim.api.nvim_create_autocmd("BufWritePost", {
-    pattern = { "go.mod", "go.sum" },
+-- 当焦点回到 Neovim 时检查文件变化
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
     callback = function()
-        for _, client in pairs(vim.lsp.get_clients()) do
-            if client.name == "gopls" then
-                client.notify("workspace/didChangeConfiguration", { settings = {} })
-            end
+        if vim.fn.mode() ~= 'c' then
+            vim.cmd('checktime')
         end
     end,
 })
+
+-- 已移除旧的 BufWritePost autocommand，因为在 lspconfig.lua 中有更完善的实现
 
 -- vim.api.nvim_create_autocmd("LspDetach", {
 --     callback = function(args)

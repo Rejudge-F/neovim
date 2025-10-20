@@ -28,6 +28,8 @@ vim.opt.smartcase      = true
 vim.opt.backup         = false
 vim.opt.writebackup    = false
 vim.opt.swapfile       = false
+vim.opt.autoread       = true  -- 自动读取外部文件变化
+vim.opt.updatetime     = 1000  -- 更新时间（毫秒），用于触发 CursorHold 等事件
 
 vim.diagnostic.config({
     virtual_text = false, -- 禁用行内文本（如错误信息）
