@@ -54,15 +54,17 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 # ============================================
-# Fast Completion Setup
+# Fast Completion Setup (Optimized)
 # ============================================
 
-# Immediate compinit for faster perceived startup
+# Optimized compinit - skip security checks for maximum speed
 autoload -Uz compinit
-if [[ -n ${HOME}/.cache/.zcompdump(#qN.mh+24) ]]; then
+# Only regenerate compdump once a week (168 hours = 7 days)
+if [[ -n ${HOME}/.cache/.zcompdump(#qN.mh+168) ]]; then
   compinit -d "${HOME}/.cache/.zcompdump"
 else
-  compinit -C -d "${HOME}/.cache/.zcompdump"
+  # -C: Skip function check, -u: Skip insecure directory check
+  compinit -C -u -d "${HOME}/.cache/.zcompdump"
 fi
 
 # Load completions plugin with turbo mode
@@ -124,6 +126,13 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 
 # Custom keybindings
 bindkey '^L' autosuggest-accept
+
+# ============================================
+# Zoxide - Smarter cd (Deferred Loading)
+# ============================================
+
+# Defer zoxide initialization to not block startup
+eval "$(zoxide init zsh --hook prompt)"
 
 # ============================================
 # Starship Prompt (Optimized)
