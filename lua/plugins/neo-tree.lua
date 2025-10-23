@@ -70,10 +70,12 @@ return {
                     width = 30,
                     mappings = {
                         ["s"] = "",
-                        ["sv"] = "open_vsplit",
-                        ["sp"] = "open_split",
                         ["<cr>"] = "open",
                         ["o"] = "open",
+                        ["w"] = "open_with_window_picker",  -- 使用窗口选择器打开文件
+                        ["sv"] = "vsplit_with_window_picker",  -- 垂直分割并选择窗口
+                        ["sp"] = "split_with_window_picker",   -- 水平分割并选择窗口
+                        ["t"] = "open_tabnew",  -- 在新标签页打开
                         ["oc"] = "",
                         ["od"] = "",
                         ["om"] = "",

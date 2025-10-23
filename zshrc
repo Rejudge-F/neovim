@@ -1,10 +1,12 @@
 # ============================================
 # Performance-optimized Zsh Configuration
 # Using Starship + Zinit (No Oh My Zsh)
+# Optimized for fast startup
 # ============================================
 
-# PATH setup
+# PATH setup with deduplication
 export PATH="$HOME/.local/bin:/Users/bytedance/flutter/flutter/bin:/opt/homebrew/bin:/opt/homebrew/opt/mysql-client/bin:$HOME/go/bin:$PATH"
+typeset -U path  # Auto-deduplicate PATH
 
 # History configuration
 HISTFILE=~/.zsh_history
@@ -17,7 +19,7 @@ export HISTTIMEFORMAT="%d/%m/%y %T "
 
 # Basic zsh options
 setopt AUTO_CD
-setopt CORRECT
+setopt CORRECT  # Keep auto-correction as requested
 setopt INTERACTIVE_COMMENTS
 
 # Enable colors for ls (macOS)
@@ -28,9 +30,11 @@ export LSCOLORS=GxFxCxDxBxegedabagaced
 alias vim=nvim
 alias ls='ls -G'
 
-# g shell setup
-[ -s "${HOME}/.g/env" ] && \. "${HOME}/.g/env"
-unalias g 2>/dev/null
+# g shell setup - defer to avoid blocking startup
+if [ -s "${HOME}/.g/env" ]; then
+  source "${HOME}/.g/env"
+  unalias g 2>/dev/null
+fi
 
 # ============================================
 # Zinit Plugin Manager
@@ -49,21 +53,27 @@ source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-# Defer compinit to speed up shell startup
-zinit ice wait lucid atinit"
-  autoload -Uz compinit
-  if [[ -n \${HOME}/.cache/.zcompdump(#qN.mh+24) ]]; then
-    compinit -d \"\${HOME}/.cache/.zcompdump\"
-  else
-    compinit -C -d \"\${HOME}/.cache/.zcompdump\"
-  fi
-"
-zinit light zdharma-continuum/null
+# ============================================
+# Fast Completion Setup
+# ============================================
 
-# Load plugins with turbo mode (deferred/lazy loading)
-zinit ice wait lucid
+# Immediate compinit for faster perceived startup
+autoload -Uz compinit
+if [[ -n ${HOME}/.cache/.zcompdump(#qN.mh+24) ]]; then
+  compinit -d "${HOME}/.cache/.zcompdump"
+else
+  compinit -C -d "${HOME}/.cache/.zcompdump"
+fi
+
+# Load completions plugin with turbo mode
+zinit ice wait lucid blockf atpull'zinit creinstall -q .'
 zinit light zsh-users/zsh-completions
 
+# ============================================
+# Plugin Loading (Turbo Mode)
+# ============================================
+
+# Autosuggestions - defer loading
 zinit ice wait lucid atload"_zsh_autosuggest_start"
 zinit light zsh-users/zsh-autosuggestions
 
@@ -89,8 +99,15 @@ zstyle ':completion:*' completer _complete _match _approximate
 zstyle ':completion:*:match:*' original only
 zstyle ':completion:*:approximate:*' max-errors 1 numeric
 
-# Dart CLI completion
-[[ -f /Users/bytedance/.dart-cli-completion/zsh-config.zsh ]] && . /Users/bytedance/.dart-cli-completion/zsh-config.zsh || true
+# Cache completion results for speed
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path "${HOME}/.cache/zsh/zcompcache"
+
+# Dart CLI completion - defer loading
+if [[ -f /Users/bytedance/.dart-cli-completion/zsh-config.zsh ]]; then
+  zinit ice wait'2' lucid
+  zinit snippet /Users/bytedance/.dart-cli-completion/zsh-config.zsh
+fi
 
 # This speeds up pasting with autosuggest
 # https://github.com/zsh-users/zsh-autosuggestions/issues/238
@@ -109,7 +126,9 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 bindkey '^L' autosuggest-accept
 
 # ============================================
-# Starship Prompt
+# Starship Prompt (Optimized)
 # ============================================
 
+# Use direct eval for faster initialization
+# Starship is already optimized, direct loading is fine
 eval "$(starship init zsh)"

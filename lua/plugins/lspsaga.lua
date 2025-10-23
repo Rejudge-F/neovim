@@ -9,26 +9,53 @@ return {
             lightbulb = {
                 enable = false,
             },
+            diagnostic = {
+                jump_num_shortcut = false,  -- 禁用诊断窗口的数字快捷键
+            },
+            code_action = {
+                num_shortcut = false,  -- 禁用代码操作窗口的数字快捷键
+            },
             definition = {
+                width = 0.6,
+                height = 0.5,
                 keys = {
                     edit = 'o',
                     vsplit = 'sv',
                     split = 'sp',
                     tabe = 't',
-                    quit = 'q'
+                    quit = 'q',
+                    close = '<Esc>',
                 }
             },
             finder = {
+                max_height = 0.6,
+                default = 'ref+imp',  -- 默认显示引用和实现
+                layout = 'float',     -- 使用浮动布局
+                silent = false,
                 keys = {
+                    shuttle = '[w',       -- 在结果间切换
+                    toggle_or_open = 'o', -- 打开或切换
                     vsplit = 'sv',
                     split = 'sp',
                     tabe = 't',
-                    quit = 'q'
+                    tabnew = 'r',
+                    quit = 'q',
+                    close = '<Esc>',
                 }
             },
             symbol_in_winbar = {
                 enable = true,
-            }
+            },
+            ui = {
+                border = 'rounded',  -- 使用圆角边框
+                title = true,
+                winblend = 0,
+                expand = '',
+                collapse = '',
+                code_action = '💡',
+                actionfix = ' ',
+                lines = { '┗', '┣', '┃', '━', '┏' },
+            },
         })
         vim.keymap.set("n", "rn", ":Lspsaga rename<CR>", { noremap = true, silent = true })
         vim.keymap.set('n', 'K', ':Lspsaga peek_definition<CR>', { noremap = true, silent = true })
