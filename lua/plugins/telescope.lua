@@ -59,15 +59,24 @@ return {
             },
             extensions = {
                 projects = {
-
+                    -- project.nvim 的 telescope 扩展配置
+                    display_type = 'full', -- 显示完整路径
+                    hidden_files = true, -- 显示隐藏文件
+                    theme = 'dropdown', -- 使用下拉主题
+                    order_by = 'asc', -- 排序方式
+                    search_by = 'title', -- 按标题搜索
                 }
             }
         })
+
+        -- 加载 project.nvim 的 telescope 扩展
+        require('telescope').load_extension('projects')
+
         vim.keymap.set("n", "<leader>f", ":Telescope find_files<CR>",
             { noremap = true, silent = true, desc = "Find files" })
         vim.keymap.set("n", "<leader>ss", ":Telescope live_grep<CR>",
             { noremap = true, silent = true, desc = "Live grep" })
-        vim.keymap.set("n", "<leader>p", ":Telescope neovim-project discover<CR>", -- 使用新的项目管理
+        vim.keymap.set("n", "<leader>p", ":Telescope projects<CR>", -- 使用 project.nvim 的 telescope 扩展
             { noremap = true, silent = true, desc = "Find projects" })
         vim.keymap.set("n", "<leader>bf", ":Telescope buffers<CR>",
             { noremap = true, silent = true, desc = "Find buffers" })

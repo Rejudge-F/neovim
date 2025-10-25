@@ -1,7 +1,9 @@
 return {
     "nvim-treesitter/nvim-treesitter",
     branch = "main",
-    build = ":TSUpdate",
+    build = function()
+        require("nvim-treesitter.install").update({ with_sync = true })()
+    end,
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
         "nvim-treesitter/nvim-treesitter-textobjects",
@@ -25,6 +27,6 @@ return {
 
         -- 设置折叠方法为 treesitter（与 nvim-ufo 配合使用）
         vim.opt.foldmethod = "expr"
-        vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+        vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
     end
 }
