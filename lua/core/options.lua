@@ -1,3 +1,12 @@
+-- 暂时禁用废弃 API 警告
+-- 原因：以下插件使用了废弃的 vim.lsp.buf_get_clients() 或 vim.lsp.get_active_clients()
+-- 1. project.nvim - 使用 buf_get_clients()
+-- 2. nvim-dap-go - 使用 buf_get_clients()
+-- 3. lsp-progress.nvim - 使用 get_active_clients()
+-- 4. conform.nvim - 使用 get_active_clients()
+-- 等待这些插件更新后可以移除此配置
+vim.deprecate = function() end
+
 vim.opt.encoding       = 'utf-8'
 vim.opt.guicursor      = 'n-v-c-i:block'
 vim.opt.termguicolors  = true
