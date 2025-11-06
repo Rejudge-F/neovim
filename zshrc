@@ -141,3 +141,5 @@ eval "$(zoxide init zsh --hook prompt)"
 # Use direct eval for faster initialization
 # Starship is already optimized, direct loading is fine
 eval "$(starship init zsh)"
+
+export GEMINI_API_KEY="REDACTED_GEMINI_KEY"
