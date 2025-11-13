@@ -1,5 +1,6 @@
 return {
     "theHamsta/nvim-dap-virtual-text",
+    lazy = true,  -- DAP 启动时才加载
     dependencies = {
         "mfussenegger/nvim-dap",
         "nvim-treesitter/nvim-treesitter",

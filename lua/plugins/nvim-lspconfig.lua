@@ -1,6 +1,6 @@
 return {
     "neovim/nvim-lspconfig",
-    event = "BufReadPre", -- 只在读取文件前加载
+    event = { "BufReadPre", "BufNewFile" }, -- 读取或新建文件时加载
     dependencies = {
         { "williamboman/mason.nvim", config = true },
         "williamboman/mason-lspconfig.nvim",
@@ -8,6 +8,7 @@ return {
 
         {
             "hrsh7th/nvim-cmp",
+            event = "InsertEnter",  -- 进入插入模式时才加载补全
             dependencies = {
                 "hrsh7th/cmp-nvim-lsp",
                 "hrsh7th/cmp-buffer",

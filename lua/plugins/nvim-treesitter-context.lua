@@ -1,5 +1,6 @@
 return {
     "nvim-treesitter/nvim-treesitter-context",
+    event = "BufReadPost",  -- 读取文件后才加载
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()
         require("treesitter-context").setup(

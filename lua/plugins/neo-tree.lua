@@ -72,6 +72,16 @@ return {
                         ["s"] = "",
                         ["<cr>"] = "open",
                         ["o"] = "open",
+                        ["h"] = "close_node",  -- 折叠文件夹
+                        ["l"] = "open",  -- 展开文件夹或打开文件
+                        ["H"] = "close_all_subnodes",  -- 递归折叠所有子节点
+                        ["L"] = function(state)
+                            -- 递归展开所有子节点
+                            local node = state.tree:get_node()
+                            if node.type == "directory" then
+                                require("neo-tree.sources.filesystem.commands").expand_all_nodes(state, node)
+                            end
+                        end,
                         ["w"] = "open_with_window_picker",  -- 使用窗口选择器打开文件
                         ["sv"] = "vsplit_with_window_picker",  -- 垂直分割并选择窗口
                         ["sp"] = "split_with_window_picker",   -- 水平分割并选择窗口

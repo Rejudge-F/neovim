@@ -1,6 +1,15 @@
 return {
     "nvim-telescope/telescope.nvim",
     branch = "master", -- 使用 master 分支获取废弃 API 修复
+    cmd = "Telescope",  -- 仅在执行 Telescope 命令时加载
+    keys = {
+        { "<leader>f", "<cmd>Telescope find_files<cr>", desc = "Find files" },
+        { "<leader>ss", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
+        { "<leader>p", "<cmd>Telescope projects<cr>", desc = "Find projects" },
+        { "<leader>bf", "<cmd>Telescope buffers<cr>", desc = "Find buffers" },
+        { "<leader>fr", "<cmd>Telescope frecency<cr>", desc = "Frecency files" },
+        { "<leader>th", "<cmd>Telescope colorscheme<cr>", desc = "Switch colorscheme" },
+    },
     dependencies = {
         "nvim-lua/plenary.nvim" },
     config = function()
@@ -71,18 +80,5 @@ return {
 
         -- 加载 project.nvim 的 telescope 扩展
         require('telescope').load_extension('projects')
-
-        vim.keymap.set("n", "<leader>f", ":Telescope find_files<CR>",
-            { noremap = true, silent = true, desc = "Find files" })
-        vim.keymap.set("n", "<leader>ss", ":Telescope live_grep<CR>",
-            { noremap = true, silent = true, desc = "Live grep" })
-        vim.keymap.set("n", "<leader>p", ":Telescope projects<CR>", -- 使用 project.nvim 的 telescope 扩展
-            { noremap = true, silent = true, desc = "Find projects" })
-        vim.keymap.set("n", "<leader>bf", ":Telescope buffers<CR>",
-            { noremap = true, silent = true, desc = "Find buffers" })
-        vim.keymap.set("n", "<leader>fr", ":Telescope frecency<CR>",
-            { noremap = true, silent = true, desc = "Frecency files" })
-        vim.keymap.set("n", "<leader>th", ":Telescope colorscheme<CR>",
-            { noremap = true, silent = true, desc = "Switch colorscheme" })
     end
 }

@@ -1,16 +1,19 @@
 return {
     "rcarriga/nvim-notify",
-    config = function()
-        local notify = require("notify")
-        notify.setup({
-            stages = "static",
-            top_down = false,
-            timeout = 1000,
-            max_width = 50,  -- 添加：限制最大宽度
-            max_height = 10, -- 添加：限制最大高度
-            render = "compact", -- 添加：紧凑模式
-        })
-        -- 设置为全局通知处理器（已有）
-        vim.notify = notify
+    lazy = true,  -- 延迟加载
+    init = function()
+        -- 延迟设置 vim.notify，避免启动时加载
+        vim.defer_fn(function()
+            local notify = require("notify")
+            notify.setup({
+                stages = "static",
+                top_down = false,
+                timeout = 1000,
+                max_width = 50,
+                max_height = 10,
+                render = "compact",
+            })
+            vim.notify = notify
+        end, 100)  -- 启动后 100ms 再加载
     end,
 }
