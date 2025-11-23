@@ -44,6 +44,9 @@ return {
             preselect = require('cmp').PreselectMode.Item, -- 总是高亮第一个
             completion = {
                 completeopt = 'menu,menuone,noinsert',     -- Ensures the menu is shown and the first item is preselected
+                autocomplete = {
+                    require('cmp.types').cmp.TriggerEvent.TextChanged,
+                },
             },
             snippet = {
                 expand = function(args)
@@ -60,14 +63,19 @@ return {
             },
             mapping = cmp.mapping.preset.insert({
                 ["<CR>"] = cmp.mapping.confirm({ select = true }),
+                ["<C-Space>"] = cmp.mapping.complete(), -- 手动触发补全
             }),
             sources = cmp.config.sources({
-                { name = "nvim_lsp" },
-                { name = "luasnip" },
-                { name = "buffer" },
-                { name = "path" },
+                { name = "nvim_lsp", priority = 1000 },
+                { name = "luasnip", priority = 750 },
+                { name = "buffer", priority = 500 },
+                { name = "path", priority = 250 },
                 { name = "render-markdown" },
             }),
+            -- 确保在输入特殊字符(如 .)时自动触发补全
+            experimental = {
+                ghost_text = false,
+            },
         })
 
 

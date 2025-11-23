@@ -11,9 +11,10 @@ return {
                 follow_files = true
             },
             attach_to_untracked          = true,
-            current_line_blame           = true,
+            current_line_blame           = true,  -- 启用 blame 数据收集(不在行尾显示)
+            _signs_staged_enable         = false, -- 禁用 staged 标志,减少 blame 显示
             current_line_blame_opts      = {
-                virt_text = true,
+                virt_text = false,  -- 优化：禁用虚拟文本显示,仅收集数据供 lualine 使用
                 virt_text_pos = 'eol',
                 ignore_whitespace = false,
                 delay = 10,

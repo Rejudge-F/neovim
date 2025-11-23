@@ -1,8 +1,5 @@
 vim.cmd [[autocmd BufLeave * silent! update]]
 
--- for diagnostics - 优化性能
-vim.o.updatetime = 500 -- 500ms，平衡性能和响应速度
-
 -- 光标停留时自动显示诊断信息
 vim.api.nvim_create_autocmd("CursorHold", {
     callback = function()

@@ -32,7 +32,7 @@ return {
             },
 
             -- 启用实时更新
-            timer_interval = 200, -- 每200ms更新一次
+            timer_interval = 500, -- 优化：从 200ms 改为 500ms，减少更新频率
             toggle_key = nil, -- 不需要手动切换键
             select_signature_key = nil, -- 不需要选择签名键
             move_cursor_key = nil, -- 不需要移动光标键

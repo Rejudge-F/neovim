@@ -20,9 +20,28 @@ return {
                     'diagnostics',
                 },
                 lualine_c = {
-                    { 'filename', path = 1, symbols = { modified = ' ●', readonly = ' ', unnamed = '[No Name]' } },
+                    { 'filename', path = 1, symbols = { modified = ' ●', readonly = ' ', unnamed = '[No Name]' } },
                 },
-                lualine_x = { require('lsp-progress').progress, 'encoding', 'fileformat', 'filetype' },
+                lualine_x = {
+                    {
+                        -- 显示 git blame 信息
+                        function()
+                            local blame = vim.b.gitsigns_blame_line
+                            if blame then
+                                return string.format(" %s", blame)
+                            end
+                            return ""
+                        end,
+                        cond = function()
+                            return vim.b.gitsigns_blame_line ~= nil
+                        end,
+                        color = { fg = '#7c7d83', gui = 'italic' },
+                    },
+                    require('lsp-progress').progress,
+                    'encoding',
+                    'fileformat',
+                    'filetype'
+                },
                 lualine_y = { 'progress' },
                 lualine_z = { 'location' }
             },
