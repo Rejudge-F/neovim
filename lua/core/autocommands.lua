@@ -1,20 +1,9 @@
 vim.cmd [[autocmd BufLeave * silent! update]]
 
--- 光标停留时自动显示诊断信息
-vim.api.nvim_create_autocmd("CursorHold", {
-    callback = function()
-        -- 只在有诊断信息时才显示
-        local opts = {
-            focusable = false,
-            close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-            border = 'rounded',
-            source = 'always',
-            prefix = ' ',
-            scope = 'cursor',
-        }
-        vim.diagnostic.open_float(nil, opts)
-    end,
-})
+-- 诊断显示已统一使用 lspsaga:
+--   ]e / [e  - 跳转到下一个/上一个诊断
+--   <leader>db - 显示当前 buffer 诊断列表
+--   <leader>dw - 显示 workspace 诊断列表
 
 -- 当焦点回到 Neovim 时检查文件变化
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
