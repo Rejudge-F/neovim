@@ -3,6 +3,8 @@ return {
     event = "LspAttach",
     config = function()
         require('lspsaga').setup({
+            -- 请求超时设置,防止 lspsaga 卡住
+            request_timeout = 2000, -- 2秒超时
             beacon = {
                 enable = true
             },
@@ -14,6 +16,7 @@ return {
             },
             code_action = {
                 num_shortcut = false, -- 禁用代码操作窗口的数字快捷键
+                extend_gitsigns = false, -- 禁用 gitsigns 集成,可能导致延迟
             },
             definition = {
                 width = 0.6,

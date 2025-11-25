@@ -41,12 +41,21 @@ return {
         require("luasnip.loaders.from_vscode").lazy_load()
 
         cmp.setup({
-            preselect = require('cmp').PreselectMode.Item, -- 总是高亮第一个
+            preselect = require('cmp').PreselectMode.Item,
             completion = {
-                completeopt = 'menu,menuone,noinsert',     -- Ensures the menu is shown and the first item is preselected
+                completeopt = 'menu,menuone,noinsert',
                 autocomplete = {
                     require('cmp.types').cmp.TriggerEvent.TextChanged,
                 },
+            },
+            -- 性能优化: 减少补全延迟
+            performance = {
+                debounce = 60,              -- 降低 debounce 时间 (默认 60ms)
+                throttle = 30,              -- 降低 throttle 时间 (默认 30ms)
+                fetching_timeout = 200,     -- 降低获取超时 (默认 500ms)
+                confirm_resolve_timeout = 80,
+                async_budget = 1,
+                max_view_entries = 50,      -- 限制显示的条目数量
             },
             snippet = {
                 expand = function(args)
@@ -63,16 +72,43 @@ return {
             },
             mapping = cmp.mapping.preset.insert({
                 ["<CR>"] = cmp.mapping.confirm({ select = true }),
-                ["<C-Space>"] = cmp.mapping.complete(), -- 手动触发补全
+                ["<C-Space>"] = cmp.mapping.complete(),
             }),
             sources = cmp.config.sources({
-                { name = "nvim_lsp", priority = 1000 },
-                { name = "luasnip", priority = 750 },
-                { name = "buffer", priority = 500 },
-                { name = "path", priority = 250 },
+                {
+                    name = "nvim_lsp",
+                    priority = 1000,
+                    -- 性能优化: 限制 LSP 补全结果数量
+                    max_item_count = 50,
+                },
+                {
+                    name = "luasnip",
+                    priority = 750,
+                    max_item_count = 20,
+                },
+                {
+                    name = "buffer",
+                    priority = 500,
+                    max_item_count = 20,
+                    -- 只在小文件中启用 buffer 补全
+                    option = {
+                        get_bufnrs = function()
+                            local buf = vim.api.nvim_get_current_buf()
+                            local byte_size = vim.api.nvim_buf_get_offset(buf, vim.api.nvim_buf_line_count(buf))
+                            if byte_size > 1024 * 1024 then -- 1MB
+                                return {}
+                            end
+                            return { buf }
+                        end
+                    },
+                },
+                {
+                    name = "path",
+                    priority = 250,
+                    max_item_count = 20,
+                },
                 { name = "render-markdown" },
             }),
-            -- 确保在输入特殊字符(如 .)时自动触发补全
             experimental = {
                 ghost_text = false,
             },

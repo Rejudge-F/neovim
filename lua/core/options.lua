@@ -58,6 +58,10 @@ vim.opt.lazyredraw     = true   -- 宏执行时不重绘屏幕
 vim.opt.ttyfast        = true   -- 快速终端连接
 vim.opt.redrawtime     = 1500   -- 语法高亮超时时间
 
+-- 平滑滚动设置
+vim.opt.scrolloff      = 8      -- 光标上下保留 8 行
+vim.opt.smoothscroll   = true   -- 启用平滑滚动 (Neovim 0.10+)
+
 vim.diagnostic.config({
     virtual_text = false, -- 禁用行内文本（如错误信息）
     signs = true,         -- 启用左侧图标
