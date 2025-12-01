@@ -51,7 +51,7 @@ vim.opt.backup         = false
 vim.opt.writebackup    = false
 vim.opt.swapfile       = false
 vim.opt.autoread       = true  -- 自动读取外部文件变化
-vim.opt.updatetime     = 1000  -- 更新时间（毫秒），用于触发 CursorHold 等事件
+vim.opt.updatetime     = 2000  -- 更新时间（毫秒），用于触发 CursorHold 等事件
 
 -- 性能优化选项
 vim.opt.lazyredraw     = true   -- 宏执行时不重绘屏幕

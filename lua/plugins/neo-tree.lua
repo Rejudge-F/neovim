@@ -74,7 +74,8 @@ return {
                         ["o"] = "open",
                         ["h"] = "close_node",  -- 折叠文件夹
                         ["l"] = "open",  -- 展开文件夹或打开文件
-                        ["H"] = "close_all_subnodes",  -- 递归折叠所有子节点
+                        ["H"] = "toggle_hidden",  -- 切换显示隐藏文件
+                        ["zh"] = "close_all_subnodes",  -- 递归折叠所有子节点（原 H 功能移到 zh）
                         ["L"] = function(state)
                             -- 递归展开所有子节点
                             local node = state.tree:get_node()

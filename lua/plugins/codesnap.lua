@@ -2,7 +2,7 @@ return {
     "mistricky/codesnap.nvim",
     build = "make build_generator",
     keys = {
-        { "<leader>cs", "<cmd>CodeSnap<cr>", mode = "v", desc = "Save selected code snapshot into clipboard" },
+        { "<leader>cs", ":CodeSnap<cr>", mode = "x", desc = "Save selected code snapshot into clipboard" },
     },
     opts = {
         save_path = "~/Pictures",

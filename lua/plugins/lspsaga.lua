@@ -4,7 +4,7 @@ return {
     config = function()
         require('lspsaga').setup({
             -- 请求超时设置,防止 lspsaga 卡住
-            request_timeout = 2000, -- 2秒超时
+            request_timeout = 3000, -- 3秒超时
             beacon = {
                 enable = true
             },
