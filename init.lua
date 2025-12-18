@@ -22,5 +22,21 @@ require("lazy").setup({
         { import = "plugins" },
     },
     install = { colorscheme = { "seoul256" } },
-    checker = { enabled = true },
+    checker = { enabled = false },  -- 禁用自动检查更新，节省启动时间
+    change_detection = { enabled = false },  -- 禁用配置变更检测
+    performance = {
+        cache = { enabled = true },
+        rtp = {
+            disabled_plugins = {
+                "gzip",
+                "matchit",
+                "matchparen",
+                "netrwPlugin",
+                "tarPlugin",
+                "tohtml",
+                "tutor",
+                "zipPlugin",
+            },
+        },
+    },
 })

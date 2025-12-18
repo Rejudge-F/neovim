@@ -1,5 +1,6 @@
 return {
     "lewis6991/gitsigns.nvim",
+    event = { "BufReadPre", "BufNewFile" }, -- 延迟到打开文件时加载
     config = function()
         require('gitsigns').setup({
             signcolumn                   = true,
@@ -7,23 +8,23 @@ return {
             linehl                       = false,
             word_diff                    = false,
             watch_gitdir                 = {
-                interval = 1000,  -- 优化：从 100ms 改为 1000ms，减少 CPU 占用
+                interval = 1000, -- 优化：从 100ms 改为 1000ms，减少 CPU 占用
                 follow_files = true
             },
             attach_to_untracked          = true,
-            current_line_blame           = true,  -- 启用 blame 数据收集(不在行尾显示)
-            _signs_staged_enable         = false, -- 禁用 staged 标志,减少 blame 显示
+            current_line_blame           = true, -- 启用 blame 数据收集(不在行尾显示)
+            -- _signs_staged_enable 已废弃，移除此配置
             current_line_blame_opts      = {
-                virt_text = false,  -- 优化：禁用虚拟文本显示,仅收集数据供 lualine 使用
+                virt_text = false, -- 优化：禁用虚拟文本显示,仅收集数据供 lualine 使用
                 virt_text_pos = 'eol',
                 ignore_whitespace = false,
                 delay = 10,
                 virt_text_priority = 1,
                 use_focus = false,
             },
-            current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
+            current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d>',
             sign_priority                = 6,
-            update_debounce              = 300,  -- 优化：从 100ms 改为 300ms，减少更新频率
+            update_debounce              = 300, -- 优化：从 100ms 改为 300ms，减少更新频率
 
             status_formatter             = nil,
             max_file_length              = 40000,

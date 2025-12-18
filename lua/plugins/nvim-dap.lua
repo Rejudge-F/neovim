@@ -1,5 +1,15 @@
 return {
     "mfussenegger/nvim-dap",
+    -- 延迟加载：只在需要调试时加载
+    cmd = { "DapContinue", "DapToggleBreakpoint", "DapStepOver", "DapStepInto", "DapStepOut", "DapTerminate" },
+    keys = {
+        { "<F5>", desc = "DAP Continue" },
+        { "<F10>", desc = "DAP Step Over" },
+        { "<F11>", desc = "DAP Step Into" },
+        { "<F12>", desc = "DAP Step Out" },
+        { "<leader>bp", desc = "DAP Toggle Breakpoint" },
+        { "<leader>du", desc = "DAP UI Toggle" },
+    },
     dependencies = {
         "rcarriga/nvim-dap-ui",
         "leoluz/nvim-dap-go",

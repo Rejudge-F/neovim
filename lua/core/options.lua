@@ -17,15 +17,19 @@ vim.opt.showmatch      = true
 vim.opt.undofile       = true
 vim.opt.undodir        = vim.fn.expand('~/.config/nvim/undo/')
 
--- 自动清理 30 天前的 undo 文件（启动时异步执行）
+-- 自动清理 30 天前的 undo 文件（延迟执行，避免影响启动速度）
 vim.api.nvim_create_autocmd("VimEnter", {
     callback = function()
-        local undo_dir = vim.fn.expand('~/.config/nvim/undo/')
-        vim.fn.jobstart(string.format("find %s -type f -mtime +30 -delete 2>/dev/null", undo_dir), {
-            detach = true,
-        })
+        -- 延迟 5 秒执行，确保启动完成后再执行清理
+        vim.defer_fn(function()
+            local undo_dir = vim.fn.expand('~/.config/nvim/undo/')
+            vim.fn.jobstart(string.format("find %s -type f -mtime +30 -delete 2>/dev/null", undo_dir), {
+                detach = true,
+            })
+        end, 5000)
     end,
     desc = "Auto-cleanup old undo files (30+ days)",
+    once = true, -- 只执行一次
 })
 
 -- 注意：折叠配置已移至 nvim-treesitter.lua 和 nvim-ufo.lua

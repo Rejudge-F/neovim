@@ -143,3 +143,4 @@ eval "$(zoxide init zsh --hook prompt)"
 eval "$(starship init zsh)"
 
 export GEMINI_API_KEY="REDACTED_GEMINI_KEY"
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
