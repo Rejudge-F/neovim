@@ -1,7 +1,19 @@
 return {
     'stevearc/conform.nvim',
     opts = {},
-    event = { "BufWritePre" },
+    -- 只在需要格式化的文件类型时加载
+    ft = { "python", "rust", "go", "lua", "sh", "dart", "javascript", "typescript" },
+    cmd = { "ConformInfo", "Format" },
+    keys = {
+        {
+            "<leader>cf",
+            function()
+                require("conform").format({ async = true, lsp_fallback = true })
+            end,
+            mode = "",
+            desc = "Format buffer",
+        },
+    },
     config = function()
         require('conform').setup({
             formatters_by_ft = {
@@ -12,13 +24,15 @@ return {
                 sh = { "shfmt" },
                 dart = { "dart_format" },
             },
-            -- 保存时自动格式化（只需一次）
-            format_on_save = {
-                -- 如果 conform 没有配置 formatter，回退到 LSP 格式化
+            -- 禁用 format_on_save，改用 format_after_save 异步格式化
+            format_on_save = nil,
+            -- 保存后异步格式化（不阻塞保存操作）
+            format_after_save = {
                 lsp_format = "fallback",
-                timeout_ms = 500,
+                async = true, -- 异步执行，不阻塞
             },
-            -- 删除 format_after_save 以避免重复格式化
+            -- 性能优化：禁用不必要的通知
+            notify_on_error = false,
         })
     end
 }

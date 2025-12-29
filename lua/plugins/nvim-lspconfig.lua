@@ -1,23 +1,36 @@
 return {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPost", "BufNewFile" }, -- 改为 BufReadPost，延迟加载
+    -- 使用 FileType 事件：在检测到文件类型时加载，更精准且优雅
+    ft = { "c", "cpp", "lua", "python", "javascript", "typescript", "go", "rust", "java", "bash", "sh", "json", "yaml", "toml", "dart" },
     dependencies = {
         { "williamboman/mason.nvim", config = true },
         "williamboman/mason-lspconfig.nvim",
         "hrsh7th/cmp-nvim-lsp", -- 只保留 LSP capabilities 需要的
     },
     config = function()
-        -- 1. 配置 Mason
-        require("mason").setup({
-            ui = {
-                border = "rounded",
-                icons = {
-                    package_installed = "✓",
-                    package_pending = "➜",
-                    package_uninstalled = "✗"
+        -- 1. 配置 Mason（延迟到后台加载，不阻塞 LSP 启动）
+        vim.defer_fn(function()
+            require("mason").setup({
+                ui = {
+                    border = "rounded",
+                    icons = {
+                        package_installed = "✓",
+                        package_pending = "➜",
+                        package_uninstalled = "✗"
+                    }
                 }
-            }
-        })
+            })
+
+            require("mason-lspconfig").setup({
+                -- 自动安装这些 LSP 服务器
+                ensure_installed = {
+                    "jsonls", "clangd", "pyright", "gopls",
+                    "rust_analyzer", "lua_ls", "bashls"
+                },
+                -- 自动安装打开文件类型对应的 LSP
+                automatic_installation = false,
+            })
+        end, 500) -- 延迟 500ms 在后台初始化 Mason
 
         -- 获取 LSP capabilities（cmp 会在 InsertEnter 时设置）
         local capabilities = vim.tbl_deep_extend(
@@ -135,21 +148,7 @@ return {
             -- end
         end
 
-        -- 4. 配置 mason-lspconfig 自动安装和设置
-        -- 只自动安装那些在 mason 中可用的服务器
-        local mason_servers = {
-            "jsonls", "clangd", "pyright", "gopls",
-            "rust_analyzer", "lua_ls", "bashls"
-        }
-
-        require("mason-lspconfig").setup({
-            -- 自动安装这些 LSP 服务器
-            ensure_installed = mason_servers,
-            -- 自动安装打开文件类型对应的 LSP
-            automatic_installation = false, -- 改为 false，避免尝试安装不存在的服务器
-        })
-
-        -- 5. 使用 Neovim 0.11+ 的新 API 配置 LSP 服务器
+        -- 4. 使用 Neovim 0.11+ 的新 API 配置 LSP 服务器
         -- 参考: :help lspconfig-nvim-0.11
         for server_name, server_config in pairs(servers) do
             -- 合并配置
@@ -164,24 +163,6 @@ return {
             -- 启用 LSP 服务器
             vim.lsp.enable(server_name)
         end
-
-        -- 6. 确保当前已打开的 buffer 也启动 LSP（解决延迟加载导致首次打开文件 LSP 不启动的问题）
-        -- 当 lspconfig 在 BufReadPost 时加载，FileType autocmd 可能已经触发过了
-        -- 需要手动触发 LSP attach
-        vim.schedule(function()
-            for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-                if vim.api.nvim_buf_is_loaded(buf) then
-                    local ft = vim.bo[buf].filetype
-                    -- 对于已加载且有 filetype 的 buffer，手动触发 FileType autocmd
-                    if ft ~= "" then
-                        vim.api.nvim_exec_autocmds("FileType", {
-                            buffer = buf,
-                            modeline = false,
-                        })
-                    end
-                end
-            end
-        end)
 
         -- Auto-restart gopls when go.mod or go.sum changes
         vim.api.nvim_create_autocmd({ "BufWritePost", "FileChangedShellPost" }, {

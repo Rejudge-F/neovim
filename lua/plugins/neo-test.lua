@@ -1,7 +1,14 @@
 return {
     {
         "nvim-neotest/neotest",
-        event = "VeryLazy",
+        -- 按需加载：只在使用测试功能时加载
+        cmd = "Neotest",
+        keys = {
+            { "<C-t>", desc = "Toggle test summary" },
+            { "<leader>tr", desc = "Run nearest test" },
+            { "<leader>tf", desc = "Run test file" },
+            { "<leader>to", desc = "Open test output" },
+        },
         dependencies = {
             "nvim-neotest/nvim-nio",
             "nvim-lua/plenary.nvim",

@@ -1,7 +1,14 @@
 return {
     "kevinhwang91/nvim-ufo",
     dependencies = "kevinhwang91/promise-async",
-    event = "BufReadPost",
+    event = "VeryLazy", -- 延迟到 VeryLazy，折叠功能不需要立即可用
+    keys = {
+        { "zR", desc = "Open all folds" },
+        { "zM", desc = "Close all folds" },
+        { "zr", desc = "Open folds except kinds" },
+        { "zm", desc = "Close folds with" },
+        { "zp", desc = "Peek fold" },
+    },
     config = function()
         -- 配置 ufo
         require('ufo').setup({

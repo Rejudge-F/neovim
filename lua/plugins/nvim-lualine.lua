@@ -3,15 +3,19 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     event = "VeryLazy",
     config = function()
-        vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
-        vim.api.nvim_create_autocmd("User", {
-            group = "lualine_augroup",
-            pattern = "LspProgressStatusUpdated",
-            callback = require("lualine").refresh,
-        })
+        -- 延迟注册 autocmd，避免在加载时创建
+        vim.defer_fn(function()
+            vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
+            vim.api.nvim_create_autocmd("User", {
+                group = "lualine_augroup",
+                pattern = "LspProgressStatusUpdated",
+                callback = require("lualine").refresh,
+            })
+        end, 100)
         require('lualine').setup({
             theme = 'auto',
-            extensions = { "neo-tree", "mason", "toggleterm", "trouble", "nvim-dap-ui", "quickfix", "lazy", "trouble", },
+            -- 减少 extensions，只保留常用的（减少加载时间）
+            extensions = { "neo-tree", "lazy", "quickfix" },
             sections = {
                 lualine_a = { 'mode' },
                 lualine_b = {
