@@ -21,9 +21,8 @@ require("lazy").setup({
     spec = {
         { import = "plugins" },
     },
-    install = { colorscheme = { "seoul256" } },
-    checker = { enabled = false },  -- 禁用自动检查更新，节省启动时间
-    change_detection = { enabled = false },  -- 禁用配置变更检测
+    checker = { enabled = false },          -- 禁用自动检查更新，节省启动时间
+    change_detection = { enabled = false }, -- 禁用配置变更检测
     performance = {
         cache = { enabled = true },
         rtp = {
