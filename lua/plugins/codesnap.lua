@@ -5,7 +5,7 @@ return {
     keys = {
         { "<leader>cs", ":CodeSnap<cr>", mode = "x", desc = "Save selected code snapshot into clipboard" },
     },
-    event = "VeryLazy", -- 确保延迟加载
+    -- 移除 event，只使用 keys 触发，避免在 VeryLazy 时提前加载
     opts = {
         save_path = "/tmp",
         snapshot_config = {

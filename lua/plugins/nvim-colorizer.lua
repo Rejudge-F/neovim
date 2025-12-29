@@ -1,6 +1,7 @@
 return {
     "catgoose/nvim-colorizer.lua",
-    event = "BufReadPre",
+    -- 只在需要颜色高亮的文件类型中加载
+    ft = { "css", "scss", "sass", "html", "javascript", "typescript", "jsx", "tsx", "vue", "svelte", "lua", "vim" },
     opts = {
         user_default_options = {
             mode = "background",  -- 使用背景色模式

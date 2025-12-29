@@ -1,6 +1,6 @@
 return {
     "lewis6991/gitsigns.nvim",
-    event = { "BufReadPre", "BufNewFile" }, -- 延迟到打开文件时加载
+    event = { "BufReadPost", "BufNewFile" }, -- 改为 BufReadPost，进一步延迟加载
     config = function()
         require('gitsigns').setup({
             signcolumn                   = true,

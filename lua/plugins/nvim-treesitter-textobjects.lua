@@ -2,7 +2,7 @@ return {
     "nvim-treesitter/nvim-treesitter-textobjects",
     dependencies = "nvim-treesitter/nvim-treesitter",
     branch = "main",
-    event = { "BufReadPost", "BufNewFile", "BufReadPre" },
+    event = { "BufReadPost", "BufNewFile" }, -- 移除 BufReadPre，避免过早加载
     config = function()
         require("nvim-treesitter-textobjects").setup({
             select = {
