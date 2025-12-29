@@ -165,6 +165,24 @@ return {
             vim.lsp.enable(server_name)
         end
 
+        -- 6. 确保当前已打开的 buffer 也启动 LSP（解决延迟加载导致首次打开文件 LSP 不启动的问题）
+        -- 当 lspconfig 在 BufReadPost 时加载，FileType autocmd 可能已经触发过了
+        -- 需要手动触发 LSP attach
+        vim.schedule(function()
+            for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                if vim.api.nvim_buf_is_loaded(buf) then
+                    local ft = vim.bo[buf].filetype
+                    -- 对于已加载且有 filetype 的 buffer，手动触发 FileType autocmd
+                    if ft ~= "" then
+                        vim.api.nvim_exec_autocmds("FileType", {
+                            buffer = buf,
+                            modeline = false,
+                        })
+                    end
+                end
+            end
+        end)
+
         -- Auto-restart gopls when go.mod or go.sum changes
         vim.api.nvim_create_autocmd({ "BufWritePost", "FileChangedShellPost" }, {
             pattern = { "go.mod", "go.sum" },
