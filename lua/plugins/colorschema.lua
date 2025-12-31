@@ -3,7 +3,7 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
-        vim.g.seoul256_background = 236
+        vim.g.seoul256_background = 235
         vim.cmd("colorscheme seoul256")
     end
 }

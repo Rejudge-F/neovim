@@ -100,12 +100,18 @@ return {
 
         vim.g.neo_tree_window_picker_delay = 30 -- 毫秒
 
-        -- 添加自动刷新命令：当焦点回到 nvim 时刷新 neo-tree
-        vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+        -- 添加自动刷新命令：当焦点回到 nvim 时刷新 neo-tree 和 git 状态
+        vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
             pattern = "*",
             callback = function()
                 if vim.fn.getcmdwintype() == "" then
                     vim.cmd("checktime")
+                    -- 刷新 neo-tree 的 git 状态
+                    local manager = require("neo-tree.sources.manager")
+                    local state = manager.get_state("filesystem")
+                    if state and state.tree then
+                        manager.refresh("filesystem")
+                    end
                 end
             end,
         })
@@ -121,5 +127,16 @@ return {
                 end
             end,
         })
+
+        -- 定期刷新 git 状态（每 5 秒检查一次，只在 neo-tree 窗口打开时）
+        local timer = vim.loop.new_timer()
+        timer:start(5000, 5000, vim.schedule_wrap(function()
+            local manager = require("neo-tree.sources.manager")
+            local state = manager.get_state("filesystem")
+            -- 只在 neo-tree 窗口打开时刷新
+            if state and state.tree and vim.fn.bufwinnr("neo-tree") ~= -1 then
+                manager.refresh("filesystem")
+            end
+        end))
     end
 }

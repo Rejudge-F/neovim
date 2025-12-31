@@ -58,7 +58,7 @@ vim.opt.autoread       = true  -- 自动读取外部文件变化
 vim.opt.updatetime     = 2000  -- 更新时间（毫秒），用于触发 CursorHold 等事件
 
 -- 性能优化选项
-vim.opt.lazyredraw     = true   -- 宏执行时不重绘屏幕
+vim.opt.lazyredraw     = false  -- 禁用延迟重绘，避免黑屏
 vim.opt.ttyfast        = true   -- 快速终端连接
 vim.opt.redrawtime     = 1500   -- 语法高亮超时时间
 

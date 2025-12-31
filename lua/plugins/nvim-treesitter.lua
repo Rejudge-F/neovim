@@ -41,12 +41,12 @@ return {
             pattern = enabled_fts,
             callback = function()
                 vim.treesitter.start()
-                vim.opt_local.syntax = ""  -- 禁用传统语法高亮
+                vim.opt_local.syntax = "" -- 禁用传统语法高亮
             end,
         })
 
-        -- 设置折叠方法为 treesitter（与 nvim-ufo 配合使用）
-        vim.opt.foldmethod = "expr"
-        vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+        -- -- 设置折叠方法为 treesitter（与 nvim-ufo 配合使用）
+        -- vim.opt.foldmethod = "expr"
+        -- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
     end
 }
