@@ -1,5 +1,6 @@
 return {
     "milanglacier/minuet-ai.nvim",
+    enabled = false,
     dependencies = {
         "nvim-lua/plenary.nvim",
     },
@@ -37,11 +38,11 @@ return {
                 -- 只在主要编程语言中启用 AI 补全
                 auto_trigger_ft = { 'go', 'python', 'lua', 'javascript', 'typescript', 'rust', 'c', 'cpp' },
                 keymap = {
-                    accept = '<Tab>',          -- Tab 接受整个补全
-                    accept_line = '<S-Tab>',   -- Shift+Tab 接受一行
-                    prev = '<C-k>',            -- Ctrl+K 上一个建议
-                    next = '<C-j>',            -- Ctrl+J 下一个建议
-                    dismiss = '<C-c>',         -- Ctrl+C 关闭补全
+                    accept = '<Tab>',        -- Tab 接受整个补全
+                    accept_line = '<S-Tab>', -- Shift+Tab 接受一行
+                    prev = '<C-k>',          -- Ctrl+K 上一个建议
+                    next = '<C-j>',          -- Ctrl+J 下一个建议
+                    dismiss = '<C-c>',       -- Ctrl+C 关闭补全
                 },
             },
 

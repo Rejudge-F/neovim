@@ -1,6 +1,6 @@
 return {
     "https://code.byted.org/chenjiaqi.cposture/codeverse.vim.git",
-    enabled = false, -- 禁用 codeverse/trae
+    enabled = true,     -- 禁用 codeverse/trae
     event = "VeryLazy", -- 延迟加载
     dependencies = {
         "hrsh7th/nvim-cmp",
