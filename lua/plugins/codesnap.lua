@@ -1,11 +1,10 @@
 return {
     "mistricky/codesnap.nvim",
     build = "make build_generator",
-    -- 延迟加载：只在需要时加载（通过 keys 触发）
+    tag = "v2.0.0-beta.17",
     keys = {
         { "<leader>cs", ":CodeSnap<cr>", mode = "x", desc = "Save selected code snapshot into clipboard" },
     },
-    -- 移除 event，只使用 keys 触发，避免在 VeryLazy 时提前加载
     opts = {
         save_path = "/tmp",
         snapshot_config = {
