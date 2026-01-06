@@ -19,7 +19,6 @@ return {
                         "notify",
                         "quickfix",
                         "qf",
-                        "toggleterm",
                         "TelescopePrompt",
                         "TelescopeResults",
                         "Trouble",
@@ -32,7 +31,6 @@ return {
                     },
                     -- 只过滤真正不应该打开文件的 buftype
                     buftype = {
-                        "terminal",
                         "quickfix",
                         "prompt",
                     },
@@ -81,7 +79,7 @@ return {
 
             -- 如果当前窗口是普通编辑窗口，直接使用
             if current_buftype == '' and not vim.tbl_contains({
-                'neo-tree', 'toggleterm', 'Trouble', 'qf', 'quickfix'
+                'neo-tree', 'Trouble', 'qf', 'quickfix'
             }, current_filetype) then
                 return current_win
             end
@@ -97,7 +95,7 @@ return {
                 -- 找到普通的非浮动窗口
                 if buftype == '' and win_config.relative == '' and
                     not vim.tbl_contains({
-                        'neo-tree', 'toggleterm', 'Trouble', 'qf', 'quickfix'
+                        'neo-tree', 'Trouble', 'qf', 'quickfix'
                     }, filetype) then
                     return win
                 end

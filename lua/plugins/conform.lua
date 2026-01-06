@@ -2,7 +2,7 @@ return {
     'stevearc/conform.nvim',
     opts = {},
     -- 只在需要格式化的文件类型时加载
-    ft = { "python", "rust", "go", "lua", "sh", "dart", "javascript", "typescript" },
+    ft = { "python", "rust", "go", "lua", "sh", "dart", "javascript", "typescript", "thrift" },
     cmd = { "ConformInfo", "Format" },
     keys = {
         {

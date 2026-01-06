@@ -1,7 +1,7 @@
 return {
     "neovim/nvim-lspconfig",
     -- 使用 FileType 事件：在检测到文件类型时加载，更精准且优雅
-    ft = { "c", "cpp", "lua", "python", "javascript", "typescript", "go", "rust", "java", "bash", "sh", "json", "yaml", "toml", "dart" },
+    ft = { "c", "cpp", "lua", "python", "javascript", "typescript", "go", "rust", "java", "bash", "sh", "json", "yaml", "toml", "dart", "thrift" },
     dependencies = {
         { "williamboman/mason.nvim", config = true },
         "williamboman/mason-lspconfig.nvim",
@@ -77,6 +77,8 @@ return {
                 },
             },
             gopls = {
+                -- 使用 daemon 模式，让 gopls 常驻后台
+                cmd = { "gopls", "-remote=auto" },
                 settings = {
                     gopls = {
                         analyses = {

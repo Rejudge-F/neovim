@@ -1,6 +1,7 @@
 vim.g.mapleader = ';'
 vim.g.maplocalleader = '\''
 vim.api.nvim_set_keymap('n', '<leader>q', ':q<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>Q', ':qa<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', 'q', '<Nop>', { noremap = true, silent = true }) -- 取消 q 的宏录制功能
 vim.keymap.set('v', 'q', '<Nop>', { noremap = true, silent = true }) -- 取消 q 的宏录制功能
 vim.keymap.set("n", "<C-h>", "<C-w>h")
@@ -22,3 +23,10 @@ vim.keymap.set('n', '<leader>ln', function()
     vim.fn.setreg('+', string.format('%s:%d', filepath, linenr))
     vim.notify(string.format('%s:%d', filepath, linenr), vim.log.levels.INFO)
 end, { desc = "Show relative file path and line number" })
+
+vim.keymap.set('n', '<leader>Ln', function()
+    local filepath = vim.fn.expand('%:p')
+    local linenr = vim.fn.line('.')
+    vim.fn.setreg('+', string.format('%s:%d', filepath, linenr))
+    vim.notify(string.format('%s:%d', filepath, linenr), vim.log.levels.INFO)
+end, { desc = "Show absolute file path and line number" })
