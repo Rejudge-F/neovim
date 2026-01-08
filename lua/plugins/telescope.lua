@@ -39,19 +39,7 @@ return {
                     },
                 },
                 mappings = {
-                    i = {
-                        ["<CR>"] = function(prompt_bufnr)
-                            local win = _G.get_smart_window()
-                            if win then vim.api.nvim_set_current_win(win) end
-                            actions.select_default(prompt_bufnr)
-                        end,
-                    },
                     n = {
-                        ["<CR>"] = function(prompt_bufnr)
-                            local win = _G.get_smart_window()
-                            if win then vim.api.nvim_set_current_win(win) end
-                            actions.select_default(prompt_bufnr)
-                        end,
                         ["sv"] = actions.select_vertical,
                         ["sp"] = actions.select_horizontal,
                         ["<leader>w"] = telescope_open_with_picker,
