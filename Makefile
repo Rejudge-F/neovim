@@ -17,6 +17,9 @@ RED    := \033[0;31m
 CYAN   := \033[0;36m
 RESET  := \033[0m
 
+# Use sudo only when not root
+SUDO := $(shell [ "$$(id -u)" = "0" ] && echo "" || echo "sudo")
+
 define log_info
 	@printf '$(GREEN)[✓]$(RESET) %s\n' $(1)
 endef
@@ -50,14 +53,24 @@ PKG_MGR := $(shell \
 	elif command -v pacman >/dev/null 2>&1; then echo pacman; \
 	else echo unknown; fi)
 
+# Detect pip command (some distros have pip3, some have pip, some need python3 -m pip)
+PIP := $(shell \
+	if command -v pip3 >/dev/null 2>&1; then echo pip3; \
+	elif command -v pip >/dev/null 2>&1; then echo pip; \
+	else echo "python3 -m pip"; fi)
+
 # ============================================================================
 # Main targets
 # ============================================================================
 macos: brew-deps neovim node-deps python-deps go-deps rust-deps lua-deps-brew shell-deps-brew fonts-brew terminal-macos nvim-plugins
 	$(call finish_msg)
 
-unix: apt-deps neovim node-deps python-deps go-deps rust-deps lua-deps-apt shell-deps-apt fonts-apt terminal-linux nvim-plugins
+unix: ensure-local-bin apt-deps neovim node-deps python-deps go-deps rust-deps lua-deps-apt shell-deps-apt fonts-apt terminal-linux nvim-plugins
 	$(call finish_msg)
+
+# Ensure ~/.local/bin exists before anything tries to install there
+ensure-local-bin:
+	@mkdir -p "$$HOME/.local/bin"
 
 # ============================================================================
 # macOS — Homebrew
@@ -76,15 +89,21 @@ brew-deps:
 apt-deps:
 	$(call log_step,"Installing core dependencies via $(PKG_MGR)...")
 ifeq ($(PKG_MGR),apt)
-	@sudo apt-get update -qq
-	@sudo apt-get install -y -qq neovim git ripgrep fd-find curl build-essential cmake unzip wget >/dev/null
+	@$(SUDO) apt-get update -qq
+	@# Ubuntu apt ships old neovim — install from PPA for 0.10+
+	@if ! nvim --version 2>/dev/null | head -1 | grep -qE '0\.(1[0-9]|[2-9][0-9])|[1-9]\.'; then \
+		$(SUDO) apt-get install -y -qq software-properties-common >/dev/null; \
+		$(SUDO) add-apt-repository -y ppa:neovim-ppa/unstable >/dev/null 2>&1; \
+		$(SUDO) apt-get update -qq; \
+	fi
+	@$(SUDO) apt-get install -y -qq neovim git ripgrep fd-find curl build-essential cmake unzip wget python3 python3-pip python3-venv >/dev/null
 	@if ! command -v fd >/dev/null 2>&1 && command -v fdfind >/dev/null 2>&1; then \
-		sudo ln -sf $$(which fdfind) /usr/local/bin/fd; \
+		$(SUDO) ln -sf $$(which fdfind) /usr/local/bin/fd; \
 	fi
 else ifeq ($(PKG_MGR),dnf)
-	@sudo dnf install -y neovim git ripgrep fd-find curl gcc make cmake unzip wget >/dev/null
+	@$(SUDO) dnf install -y neovim git ripgrep fd-find curl gcc gcc-c++ make cmake unzip wget python3 python3-pip >/dev/null
 else ifeq ($(PKG_MGR),pacman)
-	@sudo pacman -Syu --noconfirm --needed neovim git ripgrep fd curl base-devel cmake unzip wget >/dev/null
+	@$(SUDO) pacman -Syu --noconfirm --needed neovim git ripgrep fd curl base-devel cmake unzip wget python python-pip >/dev/null
 else
 	$(call log_warn,"Unknown package manager. Please install manually: neovim git ripgrep fd curl cmake")
 endif
@@ -114,12 +133,12 @@ node-deps:
 		if command -v brew >/dev/null 2>&1; then \
 			brew install node; \
 		elif command -v apt-get >/dev/null 2>&1; then \
-			curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && \
-			sudo apt-get install -y -qq nodejs >/dev/null; \
+			curl -fsSL https://deb.nodesource.com/setup_lts.x | $(SUDO) -E bash - && \
+			$(SUDO) apt-get install -y -qq nodejs >/dev/null; \
 		elif command -v dnf >/dev/null 2>&1; then \
-			sudo dnf install -y nodejs npm >/dev/null; \
+			$(SUDO) dnf install -y nodejs npm >/dev/null; \
 		elif command -v pacman >/dev/null 2>&1; then \
-			sudo pacman -S --noconfirm --needed nodejs npm >/dev/null; \
+			$(SUDO) pacman -S --noconfirm --needed nodejs npm >/dev/null; \
 		else \
 			printf '$(RED)[✗]$(RESET) Cannot install Node.js — install manually\n'; \
 		fi \
@@ -138,16 +157,16 @@ python-deps:
 		if command -v brew >/dev/null 2>&1; then \
 			brew install python; \
 		elif command -v apt-get >/dev/null 2>&1; then \
-			sudo apt-get install -y -qq python3 python3-pip python3-venv >/dev/null; \
+			$(SUDO) apt-get install -y -qq python3 python3-pip python3-venv >/dev/null; \
 		elif command -v dnf >/dev/null 2>&1; then \
-			sudo dnf install -y python3 python3-pip >/dev/null; \
+			$(SUDO) dnf install -y python3 python3-pip >/dev/null; \
 		elif command -v pacman >/dev/null 2>&1; then \
-			sudo pacman -S --noconfirm --needed python python-pip >/dev/null; \
+			$(SUDO) pacman -S --noconfirm --needed python python-pip >/dev/null; \
 		fi \
 	fi
-	@pip3 install --user --break-system-packages pyright black ruff debugpy 2>/dev/null || \
-		pip3 install --user pyright black ruff debugpy 2>/dev/null || \
-		pip3 install pyright black ruff debugpy || true
+	@$(PIP) install --user --break-system-packages pyright black ruff debugpy 2>/dev/null || \
+		$(PIP) install --user pyright black ruff debugpy 2>/dev/null || \
+		$(PIP) install pyright black ruff debugpy || true
 	$(call log_info,"Python tools installed (pyright, black, ruff, debugpy)")
 
 # ============================================================================
@@ -186,6 +205,7 @@ lua-deps-brew:
 
 lua-deps-apt:
 	$(call log_step,"Setting up Lua tools...")
+	@mkdir -p "$$HOME/.local/bin"
 	@# lua-language-server: download prebuilt from GitHub
 	@if ! command -v lua-language-server >/dev/null 2>&1; then \
 		LLS_VERSION=$$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/releases/latest | grep '"tag_name"' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'); \
@@ -231,6 +251,7 @@ shell-deps-brew:
 
 shell-deps-apt:
 	$(call log_step,"Setting up Shell tools...")
+	@mkdir -p "$$HOME/.local/bin"
 	@if ! command -v shfmt >/dev/null 2>&1; then \
 		if command -v go >/dev/null 2>&1; then \
 			go install mvdan.cc/sh/v3/cmd/shfmt@latest; \
@@ -238,9 +259,10 @@ shell-deps-apt:
 			SHFMT_VERSION=$$(curl -s https://api.github.com/repos/mvdan/sh/releases/latest | grep '"tag_name"' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'); \
 			SHFMT_ARCH=$$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/'); \
 			if [ -n "$$SHFMT_VERSION" ]; then \
-				curl -fsSL "https://github.com/mvdan/sh/releases/download/v$$SHFMT_VERSION/shfmt_v$${SHFMT_VERSION}_linux_$$SHFMT_ARCH" -o "$$HOME/.local/bin/shfmt" && \
+				curl -fsSL -o "$$HOME/.local/bin/shfmt" \
+					"https://github.com/mvdan/sh/releases/download/v$$SHFMT_VERSION/shfmt_v$${SHFMT_VERSION}_linux_$$SHFMT_ARCH" && \
 				chmod +x "$$HOME/.local/bin/shfmt"; \
-			fi \
+			fi; \
 		fi \
 	fi
 	$(call log_info,"Shell tools installed (shfmt)")
@@ -255,7 +277,9 @@ fonts-brew:
 
 fonts-apt:
 	$(call log_step,"Installing Nerd Fonts...")
-	@if ! fc-list 2>/dev/null | grep -qi "Hack.*Nerd"; then \
+	@if command -v fc-list >/dev/null 2>&1 && fc-list 2>/dev/null | grep -qi "Hack.*Nerd"; then \
+		printf '$(GREEN)[✓]$(RESET) Hack Nerd Font already installed\n'; \
+	else \
 		FONT_DIR="$$HOME/.local/share/fonts"; \
 		mkdir -p "$$FONT_DIR"; \
 		FONT_VERSION=$$(curl -s https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest | grep '"tag_name"' | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+'); \
@@ -263,13 +287,11 @@ fonts-apt:
 			curl -fsSL "https://github.com/ryanoasis/nerd-fonts/releases/download/$$FONT_VERSION/Hack.zip" -o /tmp/HackNerdFont.zip && \
 			unzip -oq /tmp/HackNerdFont.zip -d "$$FONT_DIR" && \
 			rm -f /tmp/HackNerdFont.zip && \
-			fc-cache -f "$$FONT_DIR" 2>/dev/null; \
+			fc-cache -f "$$FONT_DIR" 2>/dev/null || true; \
 			printf '$(GREEN)[✓]$(RESET) Hack Nerd Font installed to %s\n' "$$FONT_DIR"; \
 		else \
 			printf '$(YELLOW)[!]$(RESET) Could not fetch Nerd Font version — download manually from https://www.nerdfonts.com\n'; \
 		fi \
-	else \
-		printf '$(GREEN)[✓]$(RESET) Hack Nerd Font already installed\n'; \
 	fi
 
 # ============================================================================

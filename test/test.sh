@@ -26,10 +26,10 @@ check_required() {
     local cmd=${2:-$1}
     if command -v "$cmd" >/dev/null 2>&1; then
         printf "  ${GREEN}✓${RESET} %-25s %s\n" "$name" "$(command -v "$cmd")"
-        ((PASS++))
+        PASS=$((PASS + 1))
     else
         printf "  ${RED}✗${RESET} %-25s MISSING (required)\n" "$name"
-        ((FAIL++))
+        FAIL=$((FAIL + 1))
     fi
 }
 
@@ -38,14 +38,14 @@ check_optional() {
     local cmd=${2:-$1}
     if command -v "$cmd" >/dev/null 2>&1; then
         printf "  ${GREEN}✓${RESET} %-25s %s\n" "$name" "$(command -v "$cmd")"
-        ((PASS++))
+        PASS=$((PASS + 1))
     else
         if [ "$STRICT" = "--strict" ]; then
             printf "  ${RED}✗${RESET} %-25s MISSING (strict mode)\n" "$name"
-            ((FAIL++))
+            FAIL=$((FAIL + 1))
         else
             printf "  ${YELLOW}○${RESET} %-25s skipped (optional)\n" "$name"
-            ((WARN++))
+            WARN=$((WARN + 1))
         fi
     fi
 }
@@ -53,7 +53,7 @@ check_optional() {
 check_nvim_version() {
     if ! command -v nvim >/dev/null 2>&1; then
         printf "  ${RED}✗${RESET} %-25s NOT INSTALLED\n" "neovim >= 0.10"
-        ((FAIL++))
+        FAIL=$((FAIL + 1))
         return
     fi
     local ver
@@ -63,10 +63,10 @@ check_nvim_version() {
     minor=$(echo "$ver" | cut -d. -f2)
     if [ "$major" -ge 1 ] || [ "$minor" -ge 10 ]; then
         printf "  ${GREEN}✓${RESET} %-25s %s\n" "neovim >= 0.10" "$(nvim --version | head -1)"
-        ((PASS++))
+        PASS=$((PASS + 1))
     else
         printf "  ${RED}✗${RESET} %-25s %s (need 0.10+)\n" "neovim >= 0.10" "$ver"
-        ((FAIL++))
+        FAIL=$((FAIL + 1))
     fi
 }
 
@@ -74,21 +74,29 @@ check_npm_global() {
     local name=$1
     if npm list -g "$name" >/dev/null 2>&1; then
         printf "  ${GREEN}✓${RESET} %-25s (npm global)\n" "$name"
-        ((PASS++))
+        PASS=$((PASS + 1))
     else
         printf "  ${RED}✗${RESET} %-25s MISSING (npm global)\n" "$name"
-        ((FAIL++))
+        FAIL=$((FAIL + 1))
     fi
 }
 
 check_pip_package() {
     local name=$1
-    if pip3 show "$name" >/dev/null 2>&1; then
+    local pip_cmd
+    if command -v pip3 >/dev/null 2>&1; then
+        pip_cmd=pip3
+    elif command -v pip >/dev/null 2>&1; then
+        pip_cmd=pip
+    else
+        pip_cmd="python3 -m pip"
+    fi
+    if $pip_cmd show "$name" >/dev/null 2>&1; then
         printf "  ${GREEN}✓${RESET} %-25s (pip)\n" "$name"
-        ((PASS++))
+        PASS=$((PASS + 1))
     else
         printf "  ${RED}✗${RESET} %-25s MISSING (pip)\n" "$name"
-        ((FAIL++))
+        FAIL=$((FAIL + 1))
     fi
 }
 
@@ -97,10 +105,10 @@ check_file_link() {
     local path=$2
     if [ -f "$path" ] || [ -L "$path" ]; then
         printf "  ${GREEN}✓${RESET} %-25s %s\n" "$name" "$path"
-        ((PASS++))
+        PASS=$((PASS + 1))
     else
         printf "  ${YELLOW}○${RESET} %-25s not found at %s\n" "$name" "$path"
-        ((WARN++))
+        WARN=$((WARN + 1))
     fi
 }
 
@@ -108,15 +116,15 @@ check_font() {
     if command -v fc-list >/dev/null 2>&1; then
         if fc-list 2>/dev/null | grep -qi 'Hack.*Nerd'; then
             printf "  ${GREEN}✓${RESET} %-25s installed\n" "Hack Nerd Font"
-            ((PASS++))
+            PASS=$((PASS + 1))
         else
             printf "  ${YELLOW}○${RESET} %-25s not found (may need terminal restart)\n" "Hack Nerd Font"
-            ((WARN++))
+            WARN=$((WARN + 1))
         fi
     else
         # macOS doesn't have fc-list by default
         printf "  ${YELLOW}○${RESET} %-25s cannot verify (no fc-list)\n" "Hack Nerd Font"
-        ((WARN++))
+        WARN=$((WARN + 1))
     fi
 }
 
@@ -151,7 +159,7 @@ echo ''
 printf "${CYAN}Python${RESET}\n"
 echo '───────────────────────────────────────────────'
 check_required 'python3'
-check_required 'pip3'
+if command -v pip3 >/dev/null 2>&1; then check_required 'pip' 'pip3'; elif command -v pip >/dev/null 2>&1; then check_required 'pip' 'pip'; else check_required 'pip' 'pip3'; fi
 check_pip_package 'pyright'
 check_pip_package 'black'
 check_pip_package 'ruff'
@@ -204,10 +212,10 @@ LAZY_DIR="${HOME}/.local/share/nvim/lazy"
 if [ -d "$LAZY_DIR" ]; then
     PLUGIN_COUNT=$(ls -1 "$LAZY_DIR" 2>/dev/null | wc -l | tr -d ' ')
     printf "  ${GREEN}✓${RESET} %-25s %s plugins installed\n" "lazy.nvim" "$PLUGIN_COUNT"
-    ((PASS++))
+    PASS=$((PASS + 1))
 else
     printf "  ${YELLOW}○${RESET} %-25s not yet synced (run nvim first)\n" "lazy.nvim"
-    ((WARN++))
+    WARN=$((WARN + 1))
 fi
 echo ''
 
