@@ -40,9 +40,9 @@ return {
             vim.api.nvim_win_set_height(winid, target_height)
         end
 
-        vim.api.nvim_set_keymap('t', '<C-0>', [[<C-\><C-n>:lua toggle_term_height()<CR>i]],
+        vim.api.nvim_set_keymap('t', '<C-0>', [[<C-\><C-n>:lua toggle_term_height()<CR>]],
             { noremap = true, silent = true, desc = "Toggle terminal height" })
-        vim.api.nvim_set_keymap('n', '<C-0>', [[<C-\><C-n>:lua toggle_term_height()<CR>i]],
+        vim.api.nvim_set_keymap('n', '<C-0>', [[:lua toggle_term_height()<CR>]],
             { noremap = true, silent = true, desc = "Toggle terminal height" })
     end
 }

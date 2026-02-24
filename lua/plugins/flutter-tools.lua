@@ -7,6 +7,8 @@ return {
     },
     config = function()
             require("flutter-tools").setup({
+                fvm = true,
+                flutter_lookup_cmd = "fvm flutter which",
                 debugger = { enabled = true },
                 device = { show_emulators = true },
                 dev_log = {

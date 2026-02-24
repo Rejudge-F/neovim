@@ -225,18 +225,15 @@ lua-deps-apt:
 	@# stylua: download prebuilt from GitHub
 	@if ! command -v stylua >/dev/null 2>&1; then \
 		STYLUA_VERSION=$$(curl -s https://api.github.com/repos/JohnnyMorganz/StyLua/releases/latest | grep '"tag_name"' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'); \
-		if [ -n "$$STYLUA_VERSION" ]; then \
-			STYLUA_ARCH=$$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/aarch64/'); \
-			STYLUA_URL="https://github.com/JohnnyMorganz/StyLua/releases/download/v$$STYLUA_VERSION/stylua-linux-$$STYLUA_ARCH.zip"; \
-			curl -fsSL "$$STYLUA_URL" -o /tmp/stylua.zip && \
-			unzip -oq /tmp/stylua.zip -d /tmp/stylua-bin && \
-			chmod +x /tmp/stylua-bin/stylua && \
-			mv /tmp/stylua-bin/stylua "$$HOME/.local/bin/stylua" && \
-			rm -rf /tmp/stylua.zip /tmp/stylua-bin; \
-			printf '$(GREEN)[✓]$(RESET) stylua installed\n'; \
-		else \
-			printf '$(YELLOW)[!]$(RESET) Could not fetch stylua version — install via: cargo install stylua\n'; \
-		fi \
+		[ -z "$$STYLUA_VERSION" ] && STYLUA_VERSION="2.0.2"; \
+		STYLUA_ARCH=$$(uname -m | sed 's/x86_64/x86_64/;s/aarch64/aarch64/'); \
+		STYLUA_URL="https://github.com/JohnnyMorganz/StyLua/releases/download/v$$STYLUA_VERSION/stylua-linux-$$STYLUA_ARCH.zip"; \
+		curl -fsSL "$$STYLUA_URL" -o /tmp/stylua.zip && \
+		unzip -oq /tmp/stylua.zip -d /tmp/stylua-bin && \
+		chmod +x /tmp/stylua-bin/stylua && \
+		mv /tmp/stylua-bin/stylua "$$HOME/.local/bin/stylua" && \
+		rm -rf /tmp/stylua.zip /tmp/stylua-bin; \
+		printf '$(GREEN)[\u2713]$(RESET) stylua installed\n'; \
 	else \
 		printf '$(GREEN)[✓]$(RESET) stylua already installed\n'; \
 	fi

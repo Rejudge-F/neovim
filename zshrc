@@ -144,3 +144,14 @@ eval "$(starship init zsh)"
 
 export GEMINI_API_KEY="REDACTED_GEMINI_KEY"
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+
+
+# bun completions
+[ -s "/Users/bytedance/.bun/_bun" ] && source "/Users/bytedance/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# opencode
+export PATH=/Users/bytedance/.opencode/bin:$PATH
