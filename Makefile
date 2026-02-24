@@ -209,18 +209,15 @@ lua-deps-apt:
 	@# lua-language-server: download prebuilt from GitHub
 	@if ! command -v lua-language-server >/dev/null 2>&1; then \
 		LLS_VERSION=$$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/releases/latest | grep '"tag_name"' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'); \
-		if [ -n "$$LLS_VERSION" ]; then \
-			LLS_ARCH=$$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/'); \
-			LLS_URL="https://github.com/LuaLS/lua-language-server/releases/download/$$LLS_VERSION/lua-language-server-$$LLS_VERSION-linux-$$LLS_ARCH.tar.gz"; \
-			mkdir -p "$$HOME/.local/lib/lua-language-server"; \
-			curl -fsSL "$$LLS_URL" | tar xz -C "$$HOME/.local/lib/lua-language-server"; \
-			ln -sf "$$HOME/.local/lib/lua-language-server/bin/lua-language-server" "$$HOME/.local/bin/lua-language-server"; \
-			printf '$(GREEN)[✓]$(RESET) lua-language-server installed\n'; \
-		else \
-			printf '$(YELLOW)[!]$(RESET) Could not fetch lua-language-server version — install via Mason (:MasonInstall lua-language-server)\n'; \
-		fi \
+		[ -z "$$LLS_VERSION" ] && LLS_VERSION="3.13.6"; \
+		LLS_ARCH=$$(uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/'); \
+		LLS_URL="https://github.com/LuaLS/lua-language-server/releases/download/$$LLS_VERSION/lua-language-server-$$LLS_VERSION-linux-$$LLS_ARCH.tar.gz"; \
+		mkdir -p "$$HOME/.local/lib/lua-language-server"; \
+		curl -fsSL "$$LLS_URL" | tar xz -C "$$HOME/.local/lib/lua-language-server"; \
+		ln -sf "$$HOME/.local/lib/lua-language-server/bin/lua-language-server" "$$HOME/.local/bin/lua-language-server"; \
+		printf '$(GREEN)[\u2713]$(RESET) lua-language-server installed\n'; \
 	else \
-		printf '$(GREEN)[✓]$(RESET) lua-language-server already installed\n'; \
+		printf '$(GREEN)[\u2713]$(RESET) lua-language-server already installed\n'; \
 	fi
 	@# stylua: download prebuilt from GitHub
 	@if ! command -v stylua >/dev/null 2>&1; then \
@@ -254,12 +251,11 @@ shell-deps-apt:
 			go install mvdan.cc/sh/v3/cmd/shfmt@latest; \
 		else \
 			SHFMT_VERSION=$$(curl -s https://api.github.com/repos/mvdan/sh/releases/latest | grep '"tag_name"' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'); \
+			[ -z "$$SHFMT_VERSION" ] && SHFMT_VERSION="3.10.0"; \
 			SHFMT_ARCH=$$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/'); \
-			if [ -n "$$SHFMT_VERSION" ]; then \
-				curl -fsSL -o "$$HOME/.local/bin/shfmt" \
-					"https://github.com/mvdan/sh/releases/download/v$$SHFMT_VERSION/shfmt_v$${SHFMT_VERSION}_linux_$$SHFMT_ARCH" && \
-				chmod +x "$$HOME/.local/bin/shfmt"; \
-			fi; \
+			curl -fsSL -o "$$HOME/.local/bin/shfmt" \
+				"https://github.com/mvdan/sh/releases/download/v$$SHFMT_VERSION/shfmt_v$${SHFMT_VERSION}_linux_$$SHFMT_ARCH" && \
+			chmod +x "$$HOME/.local/bin/shfmt"; \
 		fi \
 	fi
 	$(call log_info,"Shell tools installed (shfmt)")
