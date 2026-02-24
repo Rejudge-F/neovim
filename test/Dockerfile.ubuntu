@@ -1,0 +1,22 @@
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV HOME=/root
+ENV PATH="$HOME/.local/bin:$HOME/go/bin:$PATH"
+
+# Minimal base — let the Makefile install everything
+RUN apt-get update -qq && \
+    apt-get install -y -qq sudo curl git make ca-certificates && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Create ~/.local/bin so tools can install there
+RUN mkdir -p $HOME/.local/bin $HOME/.config
+
+WORKDIR /root/.config/nvim
+COPY . .
+
+# Run the installer
+RUN make unix
+
+# Verify
+CMD ["make", "check"]

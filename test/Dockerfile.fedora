@@ -1,0 +1,17 @@
+FROM fedora:41
+
+ENV HOME=/root
+ENV PATH="$HOME/.local/bin:$HOME/go/bin:$PATH"
+
+# Minimal base — let the Makefile install everything
+RUN dnf install -y sudo curl git make ca-certificates && \
+    dnf clean all
+
+RUN mkdir -p $HOME/.local/bin $HOME/.config
+
+WORKDIR /root/.config/nvim
+COPY . .
+
+RUN make unix
+
+CMD ["make", "check"]

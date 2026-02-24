@@ -1,0 +1,17 @@
+FROM archlinux:latest
+
+ENV HOME=/root
+ENV PATH="$HOME/.local/bin:$HOME/go/bin:$PATH"
+
+# Minimal base — let the Makefile install everything
+RUN pacman -Syu --noconfirm sudo curl git make && \
+    pacman -Scc --noconfirm
+
+RUN mkdir -p $HOME/.local/bin $HOME/.config
+
+WORKDIR /root/.config/nvim
+COPY . .
+
+RUN make unix
+
+CMD ["make", "check"]

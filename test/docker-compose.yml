@@ -1,0 +1,28 @@
+# Usage:
+#   cd test/
+#   docker compose build          # Build all images
+#   docker compose up              # Run all and see check output
+#   docker compose build ubuntu    # Build single distro
+#   docker compose run ubuntu      # Test single distro
+#
+# Tip: Use --no-cache to force full rebuild:
+#   docker compose build --no-cache
+
+services:
+  ubuntu:
+    build:
+      context: ..
+      dockerfile: test/Dockerfile.ubuntu
+    container_name: nvim-test-ubuntu
+
+  fedora:
+    build:
+      context: ..
+      dockerfile: test/Dockerfile.fedora
+    container_name: nvim-test-fedora
+
+  arch:
+    build:
+      context: ..
+      dockerfile: test/Dockerfile.arch
+    container_name: nvim-test-arch

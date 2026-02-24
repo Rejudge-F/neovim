@@ -1,0 +1,99 @@
+name: Test Makefile Installation
+
+on:
+  push:
+    paths:
+      - 'Makefile'
+      - 'test/**'
+      - '.github/workflows/test-install.yml'
+  pull_request:
+    paths:
+      - 'Makefile'
+      - 'test/**'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  # ================================================================
+  # macOS
+  # ================================================================
+  macos:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run make macos
+        run: make macos
+
+      - name: Verify installation
+        run: make check
+
+      - name: Run test script
+        run: ./test/test.sh
+
+  # ================================================================
+  # Ubuntu (apt)
+  # ================================================================
+  ubuntu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install base dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq make curl git
+
+      - name: Run make unix
+        run: make unix
+
+      - name: Verify installation
+        run: make check
+
+      - name: Run test script
+        run: ./test/test.sh
+
+  # ================================================================
+  # Fedora (dnf) — container
+  # ================================================================
+  fedora:
+    runs-on: ubuntu-latest
+    container: fedora:41
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install base dependencies
+        run: dnf install -y make curl git findutils
+
+      - name: Run make unix
+        run: make unix
+
+      - name: Verify installation
+        run: make check
+
+      - name: Run test script
+        run: ./test/test.sh
+
+  # ================================================================
+  # Arch (pacman) — container
+  # ================================================================
+  arch:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install base dependencies
+        run: pacman -Syu --noconfirm make curl git
+
+      - name: Run make unix
+        run: make unix
+
+      - name: Verify installation
+        run: make check
+
+      - name: Run test script
+        run: ./test/test.sh
