@@ -153,5 +153,15 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
+
+# OpenClaw Completion
+source "/Users/bytedance/.openclaw/completions/openclaw.zsh"
+
 # opencode
 export PATH=/Users/bytedance/.opencode/bin:$PATH
+
+# Disable interactive pagers for AI agents to prevent terminal mouse capture issues
+# This ensures commands like git log or less output text directly instead of taking over the screen
+export PAGER=cat
+export GIT_PAGER=cat
+export LESS="-F -X -R"

@@ -8,11 +8,8 @@
 #   ./test/test.sh --strict  # Fail on ANY missing tool (including optional)
 # ============================================================================
 
-set -euo pipefail
+set -uo pipefail
 
-
-# Ensure tools installed to ~/.local/bin and ~/go/bin are found
-export PATH="$HOME/.local/bin:$HOME/go/bin:$PATH"
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[0;33m'
@@ -86,15 +83,7 @@ check_npm_global() {
 
 check_pip_package() {
     local name=$1
-    local pip_cmd
-    if command -v pip3 >/dev/null 2>&1; then
-        pip_cmd=pip3
-    elif command -v pip >/dev/null 2>&1; then
-        pip_cmd=pip
-    else
-        pip_cmd="python3 -m pip"
-    fi
-    if $pip_cmd show "$name" >/dev/null 2>&1; then
+    if pip3 show "$name" >/dev/null 2>&1; then
         printf "  ${GREEN}✓${RESET} %-25s (pip)\n" "$name"
         PASS=$((PASS + 1))
     else
@@ -162,7 +151,7 @@ echo ''
 printf "${CYAN}Python${RESET}\n"
 echo '───────────────────────────────────────────────'
 check_required 'python3'
-if command -v pip3 >/dev/null 2>&1; then check_required 'pip' 'pip3'; elif command -v pip >/dev/null 2>&1; then check_required 'pip' 'pip'; else check_required 'pip' 'pip3'; fi
+check_required 'pip3'
 check_pip_package 'pyright'
 check_pip_package 'black'
 check_pip_package 'ruff'
