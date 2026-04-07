@@ -356,6 +356,7 @@ nvim-plugins:
 # ============================================================================
 # Health check
 # ============================================================================
+check: export PATH := $(HOME)/.local/bin:$(HOME)/go/bin:$(PATH)
 check:
 	@echo ''
 	@printf '$(CYAN)Checking installed tools...$(RESET)\n'

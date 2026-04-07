@@ -10,6 +10,12 @@
 
 set -uo pipefail
 
+# Ensure tools installed by `make unix` are found:
+#   ~/.local/bin: lua-language-server, stylua, shfmt (when downloaded as binaries)
+#   ~/go/bin:     shfmt (when installed via `go install`), gopls, dlv
+# CI shells don't include these in PATH by default.
+export PATH="$HOME/.local/bin:$HOME/go/bin:$PATH"
+
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[0;33m'
