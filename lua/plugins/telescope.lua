@@ -5,7 +5,7 @@ return {
     keys = {
         { "<leader>f", "<cmd>Telescope find_files<cr>", desc = "Find files" },
         { "<leader>ss", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
-        { "<leader>p", "<cmd>Telescope projects<cr>", desc = "Find projects" },
+        { "<leader>p", "<cmd>NeovimProjectHistory<cr>", desc = "Find projects" },
         { "<leader>bf", "<cmd>Telescope buffers<cr>", desc = "Find buffers" },
         { "<leader>fr", "<cmd>Telescope frecency<cr>", desc = "Frecency files" },
         { "<leader>th", "<cmd>Telescope colorscheme<cr>", desc = "Switch colorscheme" },
@@ -66,19 +66,6 @@ return {
                     no_ignore = true
                 },
             },
-            extensions = {
-                projects = {
-                    -- project.nvim 的 telescope 扩展配置
-                    display_type = 'full', -- 显示完整路径
-                    hidden_files = true, -- 显示隐藏文件
-                    theme = 'dropdown', -- 使用下拉主题
-                    order_by = 'asc', -- 排序方式
-                    search_by = 'title', -- 按标题搜索
-                }
-            }
         })
-
-        -- 加载 project.nvim 的 telescope 扩展
-        require('telescope').load_extension('projects')
     end
 }

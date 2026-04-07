@@ -1,15 +1,8 @@
--- 暂时禁用废弃 API 警告
--- 原因：以下插件使用了废弃的 vim.lsp.buf_get_clients() 或 vim.lsp.get_active_clients()
--- 1. project.nvim - 使用 buf_get_clients()
--- 2. nvim-dap-go - 使用 buf_get_clients()
--- 3. lsp-progress.nvim - 使用 get_active_clients()
--- 4. conform.nvim - 使用 get_active_clients()
--- 等待这些插件更新后可以移除此配置
-vim.deprecate         = function() end
-
 vim.opt.encoding      = 'utf-8'
 vim.opt.guicursor     = 'n-v-c-i:block'
 vim.opt.termguicolors = true
+-- 不在 cmdline 显示 progress 消息（LSP 进度等），交由 statusline (lualine) 显示
+vim.opt.messagesopt   = 'hit-enter,history:500'
 -- vim.opt.clipboard      = 'unnamedplus'  -- 使用系统剪贴板
 vim.opt.timeoutlen    = 300 -- 减少键位映射等待时间（毫秒），默认1000
 vim.opt.sidescrolloff = 15
@@ -70,12 +63,13 @@ vim.opt.smoothscroll = true -- 启用平滑滚动 (Neovim 0.10+)
 
 vim.diagnostic.config({
     virtual_text = false, -- 禁用行内文本（如错误信息）
-    signs = true,         -- 启用左侧图标
     underline = false,    -- 禁用下划线
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = "✗",
+            [vim.diagnostic.severity.WARN]  = "⚠",
+            [vim.diagnostic.severity.HINT]  = "󱧣",
+            [vim.diagnostic.severity.INFO]  = "",
+        },
+    },
 })
-
-local signs = { Error = "✗", Warn = "⚠", Hint = "󱧣", Info = "" }
-for type, icon in pairs(signs) do
-    local hl = "DiagnosticSign" .. type
-    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-end

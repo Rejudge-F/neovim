@@ -1,4 +1,34 @@
-vim.cmd [[autocmd BufLeave * silent! update]]
+-- 离开 buffer 时静默保存——但跳过第三方插件/runtime 路径，避免误改源码
+local lazy_path = vim.fn.stdpath("data") .. "/lazy/"
+local site_path = vim.fn.stdpath("data") .. "/site/"
+vim.api.nvim_create_autocmd("BufLeave", {
+    callback = function(args)
+        local name = vim.api.nvim_buf_get_name(args.buf)
+        if name == "" then return end
+        if name:find(lazy_path, 1, true) or name:find(site_path, 1, true) then return end
+        if not vim.bo[args.buf].modifiable or vim.bo[args.buf].readonly then return end
+        pcall(vim.cmd, "silent! update")
+    end,
+    desc = "Auto-save buffer on leave (skip third-party plugin sources)",
+})
+
+-- 恢复光标到上次离开文件时的位置（替代 nvim-lastplace）
+local lastplace_ignore_buftype = { quickfix = true, nofile = true, help = true }
+local lastplace_ignore_filetype = { gitcommit = true, gitrebase = true, svn = true, hgcommit = true }
+vim.api.nvim_create_autocmd("BufReadPost", {
+    callback = function(args)
+        if lastplace_ignore_buftype[vim.bo[args.buf].buftype] then return end
+        if lastplace_ignore_filetype[vim.bo[args.buf].filetype] then return end
+        local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
+        local line_count = vim.api.nvim_buf_line_count(args.buf)
+        if mark[1] > 0 and mark[1] <= line_count then
+            pcall(vim.api.nvim_win_set_cursor, 0, mark)
+            -- 展开折叠以确保光标可见
+            vim.cmd("normal! zv")
+        end
+    end,
+    desc = "Restore cursor to last position",
+})
 
 -- 诊断显示已统一使用 lspsaga:
 --   ]e / [e  - 跳转到下一个/上一个诊断
@@ -12,6 +42,26 @@ vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
             vim.cmd('checktime')
         end
     end,
+})
+
+-- LSP $/progress -> Nvim 0.12 progress-message 桥接
+-- 让 vim.ui.progress_status() 能拿到 LSP 进度，供 lualine 等显示
+-- 参考: :help LspProgress
+vim.api.nvim_create_autocmd("LspProgress", {
+    callback = function(ev)
+        local value = ev.data and ev.data.params and ev.data.params.value
+        if type(value) ~= "table" then return end
+        local client = vim.lsp.get_client_by_id(ev.data.client_id)
+        vim.api.nvim_echo({ { value.message or (value.kind == "end" and "done" or "") } }, false, {
+            id = "lsp." .. ev.data.client_id,
+            kind = "progress",
+            source = client and client.name or "vim.lsp",
+            title = value.title,
+            status = value.kind ~= "end" and "running" or "success",
+            percent = value.percentage,
+        })
+    end,
+    desc = "Bridge LSP $/progress to Nvim progress messages",
 })
 
 -- 已移除旧的 BufWritePost autocommand，因为在 lspconfig.lua 中有更完善的实现

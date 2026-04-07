@@ -13,8 +13,23 @@ return {
     },
     config = function()
         -- 定义快捷键（在插件加载后）
-        vim.keymap.set('n', '<leader>n', ':Neotree toggle<CR>',
-            { noremap = true, silent = true, desc = "Toggle Neo-tree" })
+        -- 在 neo-tree 内: 直接 :close 当前窗口 (避开 neo-tree 自身 close 路径里
+        --   "没有 prior window 时光标仍停在 neo-tree, win_close 关不掉 last window"
+        --   的边界情况)
+        -- 在普通 buffer 内: 正常 toggle
+        vim.keymap.set('n', '<leader>n', function()
+            if vim.bo.filetype == "neo-tree" then
+                -- 如果是 tab 内最后一个普通窗口, :close 会失败, 先跳到其他窗口
+                local wins = vim.api.nvim_tabpage_list_wins(0)
+                if #wins > 1 then
+                    vim.cmd("close")
+                else
+                    vim.cmd("Neotree close")
+                end
+            else
+                vim.cmd("Neotree toggle")
+            end
+        end, { noremap = true, silent = true, desc = "Toggle Neo-tree" })
         require("neo-tree").setup({
             close_if_last_window = true,
             popup_border_style = "rounded",
