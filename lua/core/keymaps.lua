@@ -37,3 +37,9 @@ vim.keymap.set('n', '<C-o>', beacon.wrap(function() vim.cmd('normal! \15') end),
     { desc = "Jump back with beacon" })
 vim.keymap.set('n', '<C-i>', beacon.wrap(function() vim.cmd('normal! \9') end),
     { desc = "Jump forward with beacon" })
+
+-- Nvim 0.12 内置 undotree 可视化插件 (lazy load)
+vim.keymap.set('n', '<leader>u', function()
+    vim.cmd('packadd nvim.undotree')
+    vim.cmd('Undotree')
+end, { desc = "Toggle undo tree" })

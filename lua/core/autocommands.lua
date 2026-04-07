@@ -80,7 +80,6 @@ vim.api.nvim_create_autocmd("User", {
                 "neo-tree.nvim",   -- Neo-tree
                 "toggleterm.nvim", -- ToggleTerm
                 "trouble.nvim",    -- Trouble
-                "diffview.nvim",   -- Diffview
             }
 
             for _, plugin_name in ipairs(preload_plugins) do
