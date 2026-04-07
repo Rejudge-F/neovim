@@ -121,11 +121,10 @@ return {
             bashls = {},
         }
 
-        -- 3. 增强的 on_attach 函数（作为 lspsaga 的备用）
+        -- 3. on_attach: 每个 buffer 的 LSP keymap + 自动 signature help
+        local beacon = require('core.beacon')
         local on_attach = function(client, bufnr)
-            -- 定义缓冲区局部快捷键
-            local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-            local opts = { noremap = true, silent = true }
+            local opts = { noremap = true, silent = true, buffer = bufnr }
 
             -- 格式化命令
             vim.api.nvim_buf_create_user_command(bufnr, "Format", function()
@@ -212,7 +211,6 @@ return {
                             width = width,
                             height = 1,
                             style = "minimal",
-                            border = "rounded",
                             focusable = false,
                             noautocmd = true,
                         })
@@ -254,37 +252,38 @@ return {
                 })
             end
 
-            -- 文档高亮已禁用（光标下同一单词高亮功能）
-            -- 如需启用，取消注释以下代码
-            -- if client.server_capabilities.documentHighlightProvider then
-            --     vim.api.nvim_create_augroup("lsp_document_highlight", { clear = false })
-            --     vim.api.nvim_clear_autocmds({ buffer = bufnr, group = "lsp_document_highlight" })
-            --     vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-            --         buffer = bufnr,
-            --         group = "lsp_document_highlight",
-            --         callback = vim.lsp.buf.document_highlight,
-            --     })
-            --     vim.api.nvim_create_autocmd({ "CursorMoved" }, {
-            --         buffer = bufnr,
-            --         group = "lsp_document_highlight",
-            --         callback = vim.lsp.buf.clear_references,
-            --     })
-            -- end
+            -- LSP 跳转和操作 keymap
+            -- 用 beacon 包装会移动光标的操作, 跳转后高亮目标行
+            local map = function(lhs, rhs, desc)
+                vim.keymap.set('n', lhs, rhs, vim.tbl_extend('force', opts, { desc = desc }))
+            end
+            map('K',          require('core.enhanced_hover').show,            'LSP hover (with definition)')
+            map('gd',         beacon.wrap(vim.lsp.buf.definition),            'LSP definition')
+            map('gtd',        beacon.wrap(vim.lsp.buf.type_definition),       'LSP type definition')
+            map('gi',         beacon.wrap(vim.lsp.buf.implementation),        'LSP implementation')
+            map('gr',         vim.lsp.buf.references,                         'LSP references (quickfix)')
+            map('rn',         vim.lsp.buf.rename,                             'LSP rename')
+            map('<leader>ca', vim.lsp.buf.code_action,                        'LSP code action')
+            map('<leader>so', vim.lsp.buf.document_symbol,                    'LSP document symbols (quickfix)')
+            map(']e',         function() beacon.flash(); vim.diagnostic.jump({ count = 1, float = true }) end,
+                'Next diagnostic')
+            map('[e',         function() beacon.flash(); vim.diagnostic.jump({ count = -1, float = true }) end,
+                'Prev diagnostic')
+            map('<leader>db', function() vim.diagnostic.setloclist() end,    'Buf diagnostics (loclist)')
+            map('<leader>dw', function() vim.diagnostic.setqflist() end,     'Workspace diagnostics (quickfix)')
         end
 
         -- 4. 使用 Neovim 0.11+ 的新 API 配置 LSP 服务器
         -- 参考: :help lspconfig-nvim-0.11
+        -- 全局默认 (capabilities + on_attach), 无需为每个 server 重复 merge
+        vim.lsp.config('*', {
+            capabilities = capabilities,
+            on_attach = on_attach,
+        })
         for server_name, server_config in pairs(servers) do
-            -- 合并配置
-            local config = vim.tbl_deep_extend("force", {
-                capabilities = capabilities,
-                on_attach = on_attach,
-            }, server_config)
-
-            -- 使用新的 vim.lsp.config API
-            vim.lsp.config[server_name] = config
-
-            -- 启用 LSP 服务器
+            if next(server_config) ~= nil then
+                vim.lsp.config(server_name, server_config)
+            end
             vim.lsp.enable(server_name)
         end
 

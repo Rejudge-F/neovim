@@ -30,3 +30,10 @@ vim.keymap.set('n', '<leader>Ln', function()
     vim.fn.setreg('+', string.format('%s:%d', filepath, linenr))
     vim.notify(string.format('%s:%d', filepath, linenr), vim.log.levels.INFO)
 end, { desc = "Show absolute file path and line number" })
+
+-- 跳转列表 <C-o>/<C-i> 跳转后高亮目标行 (\15 = <C-o>, \9 = <Tab>/<C-i>)
+local beacon = require('core.beacon')
+vim.keymap.set('n', '<C-o>', beacon.wrap(function() vim.cmd('normal! \15') end),
+    { desc = "Jump back with beacon" })
+vim.keymap.set('n', '<C-i>', beacon.wrap(function() vim.cmd('normal! \9') end),
+    { desc = "Jump forward with beacon" })

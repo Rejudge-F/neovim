@@ -1,6 +1,7 @@
-vim.opt.encoding      = 'utf-8'
 vim.opt.guicursor     = 'n-v-c-i:block'
 vim.opt.termguicolors = true
+-- 全局浮窗边框 (0.11+): hover/signature/code action/telescope preview 等都会用此样式
+vim.o.winborder       = 'rounded'
 -- 不在 cmdline 显示 progress 消息（LSP 进度等），交由 statusline (lualine) 显示
 vim.opt.messagesopt   = 'hit-enter,history:500'
 -- vim.opt.clipboard      = 'unnamedplus'  -- 使用系统剪贴板
@@ -9,8 +10,13 @@ vim.opt.sidescrolloff = 15
 vim.opt.showmatch     = true
 vim.opt.undofile      = true
 vim.opt.undodir       = vim.fn.expand('~/.config/nvim/undo/')
-vim.o.autoread        = true
+vim.opt.autoread      = true
 
+-- 跳转 (<C-o>/<C-i>/gd) 时保留之前的 view, 避免每次跳回都重新滚到屏幕中间
+vim.opt.jumpoptions:append('view')
+
+-- 原生补全兜底体验: 弹出文档浮窗 (与 nvim-cmp 共存)
+vim.opt.completeopt = { 'menuone', 'noselect', 'popup' }
 
 -- 自动清理 30 天前的 undo 文件（延迟执行，避免影响启动速度）
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -27,16 +33,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
     once = true, -- 只执行一次
 })
 
--- 注意：折叠配置已移至 nvim-treesitter.lua 和 nvim-ufo.lua
--- vim.opt.foldmethod     = 'expr'
--- vim.opt.foldexpr       = 'nvim_treesitter#foldexpr()'
--- vim.opt.foldlevelstart = 99
-vim.opt.wildmenu     = true
 vim.opt.wildmode     = { 'longest:list', 'full' }
 vim.opt.vb           = true
 vim.opt.number       = true
-vim.opt.history      = 700
-vim.opt.undolevels   = 700
 vim.opt.tabstop      = 4
 vim.opt.softtabstop  = 4
 vim.opt.shiftwidth   = 4
@@ -46,20 +45,21 @@ vim.opt.hlsearch     = true
 vim.opt.incsearch    = true
 vim.opt.ignorecase   = true
 vim.opt.smartcase    = true
-vim.opt.backup       = false
-vim.opt.writebackup  = false
 vim.opt.swapfile     = false
-vim.opt.autoread     = true -- 自动读取外部文件变化
 vim.opt.updatetime   = 2000 -- 更新时间（毫秒），用于触发 CursorHold 等事件
 
 -- 性能优化选项
-vim.opt.lazyredraw   = false -- 禁用延迟重绘，避免黑屏
-vim.opt.ttyfast      = true  -- 快速终端连接
-vim.opt.redrawtime   = 1500  -- 语法高亮超时时间
+vim.opt.redrawtime   = 1500 -- 语法高亮超时时间
 
 -- 平滑滚动设置
 vim.opt.scrolloff    = 8    -- 光标上下保留 8 行
 vim.opt.smoothscroll = true -- 启用平滑滚动 (Neovim 0.10+)
+
+-- 折叠: treesitter 提供 foldexpr (Nvim 0.10+ 内置)
+vim.opt.foldmethod     = "expr"
+vim.opt.foldexpr       = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevelstart = 99 -- 默认全部展开
+vim.opt.foldenable     = true
 
 vim.diagnostic.config({
     virtual_text = false, -- 禁用行内文本（如错误信息）

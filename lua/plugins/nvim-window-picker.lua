@@ -25,7 +25,6 @@ return {
                         "trouble",
                         "alpha",
                         "dashboard",
-                        "lspsagaoutline",
                         "Outline",
                         "aerial",
                     },
