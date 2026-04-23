@@ -142,7 +142,7 @@ eval "$(zoxide init zsh --hook prompt)"
 # Starship is already optimized, direct loading is fine
 eval "$(starship init zsh)"
 
-export GEMINI_API_KEY="REDACTED_GEMINI_KEY"
+[ -f ~/.secrets ] && source ~/.secrets
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 
 
@@ -165,3 +165,6 @@ export PATH=/Users/bytedance/.opencode/bin:$PATH
 export PAGER=cat
 export GIT_PAGER=cat
 export LESS="-F -X -R"
+
+# merlin-cli
+export PATH="$HOME/.merlin-cli/bin:$PATH"
