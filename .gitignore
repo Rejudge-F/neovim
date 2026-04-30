@@ -1,9 +1,10 @@
 undo/
 log/
+lua/log/
+*.log
 .secrets
 *.env
 *.pem
 *.key
 *.p12
 *.pfx
-
