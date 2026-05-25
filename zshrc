@@ -143,7 +143,6 @@ eval "$(zoxide init zsh --hook prompt)"
 eval "$(starship init zsh)"
 
 [ -f ~/.secrets ] && source ~/.secrets
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 
 
 # bun completions
@@ -168,3 +167,17 @@ export LESS="-F -X -R"
 
 # merlin-cli
 export PATH="$HOME/.merlin-cli/bin:$PATH"
+
+# nvm lazy-load: only source nvm.sh on first use of nvm/node/npm/npx/yarn/pnpm
+export NVM_DIR="$HOME/.nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  _nvm_lazy_load() {
+    unset -f nvm node npm npx yarn pnpm 2>/dev/null
+    \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  }
+  for _cmd in nvm node npm npx yarn pnpm; do
+    eval "${_cmd}() { _nvm_lazy_load; ${_cmd} \"\$@\"; }"
+  done
+  unset _cmd
+fi
