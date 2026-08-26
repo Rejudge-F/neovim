@@ -31,11 +31,15 @@ vim.keymap.set('n', '<leader>Ln', function()
     vim.notify(string.format('%s:%d', filepath, linenr), vim.log.levels.INFO)
 end, { desc = "Show absolute file path and line number" })
 
--- 跳转列表 <C-o>/<C-i> 跳转后高亮目标行 (\15 = <C-o>, \9 = <Tab>/<C-i>)
+-- 跳转列表 <C-o>/<C-i> 跳转后高亮目标行
 local beacon = require('core.beacon')
-vim.keymap.set('n', '<C-o>', beacon.wrap(function() vim.cmd('normal! \15') end),
+local function feed_normal(keys)
+    local termcodes = vim.api.nvim_replace_termcodes(keys, true, false, true)
+    vim.api.nvim_feedkeys(termcodes, 'n', false)
+end
+vim.keymap.set('n', '<C-o>', beacon.wrap(function() feed_normal('<C-o>') end),
     { desc = "Jump back with beacon" })
-vim.keymap.set('n', '<C-i>', beacon.wrap(function() vim.cmd('normal! \9') end),
+vim.keymap.set('n', '<C-i>', beacon.wrap(function() feed_normal('<C-i>') end),
     { desc = "Jump forward with beacon" })
 
 -- Nvim 0.12 内置 undotree 可视化插件 (lazy load)

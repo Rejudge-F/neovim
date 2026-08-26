@@ -181,3 +181,5 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
   done
   unset _cmd
 fi
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+export PATH="$HOME/.opencode/bin:$PATH"

@@ -76,7 +76,7 @@ function M.flash(duration, width)
 
     if active_timer then
         active_timer:stop()
-        active_timer:close()
+        if not active_timer:is_closing() then active_timer:close() end
         active_timer = nil
     end
 
@@ -107,7 +107,7 @@ function M.flash(duration, width)
         frame = frame + 1
         if frame >= frames then
             timer:stop()
-            timer:close()
+            if not timer:is_closing() then timer:close() end
             if active_timer == timer then active_timer = nil end
             if vim.api.nvim_buf_is_valid(buf) then
                 vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
