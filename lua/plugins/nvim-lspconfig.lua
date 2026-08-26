@@ -49,7 +49,7 @@ return {
                     "--clang-tidy",
                     "--header-insertion=iwyu",
                     "--completion-style=detailed",
-                    "--function-arg-placeholders",
+                    "--function-arg-placeholders=1",
                 },
             },
             dartls = {
@@ -93,7 +93,7 @@ return {
                             "-**/vendor",
                             "-**/tmp",
                         },
-                        semanticTokens = true,
+                        semanticTokens = false,
                         -- 减少内存使用
                         expandWorkspaceToModule = false,
                         -- 禁用一些不必要的 codelens
@@ -122,7 +122,6 @@ return {
         }
 
         -- 3. on_attach: 每个 buffer 的 LSP keymap + 自动 signature help
-        local beacon = require('core.beacon')
         local on_attach = function(client, bufnr)
             local opts = { noremap = true, silent = true, buffer = bufnr }
 
@@ -253,32 +252,57 @@ return {
             end
 
             -- LSP 跳转和操作 keymap
-            -- 用 beacon 包装会移动光标的操作, 跳转后高亮目标行
+            --
+            -- 绝大多数走 lspsaga (浮窗 UI), 用 core/saga.lua 包一层, 每次调用前
+            -- 清掉残留的 pending_request, 避免"按了没反应".
+            -- lspsaga 自带 beacon.enable=true, 所以这里不再套 core/beacon.lua,
+            -- 否则跳转后会闪两次.
+            --
+            -- 两个例外, 都是 lspsaga 没有的能力:
+            --   K   自写的 enhanced_hover, 在 hover 文档下方拼接目标函数源码.
+            --       不用 Lspsaga hover_doc: 它只给签名+注释, 内容是 enhanced_hover
+            --       的真子集 (后者 hover 失败时还能只显示代码), 两个都绑纯属重复
+            --   gR  自写的 ref_kinds, 把引用按 set/get 分类. lspsaga finder 只能
+            --       按 def/ref/imp 分组 (内部以 method 字符串为 key, 没有第二个
+            --       分组维度), 所以这件事塞不进 gr, 只能另起一个键
+            local saga = require('core.saga')
             local map = function(lhs, rhs, desc)
                 vim.keymap.set('n', lhs, rhs, vim.tbl_extend('force', opts, { desc = desc }))
             end
-            map('K',          require('core.enhanced_hover').show,            'LSP hover (with definition)')
-            map('gd',         beacon.wrap(vim.lsp.buf.definition),            'LSP definition')
-            map('gtd',        beacon.wrap(vim.lsp.buf.type_definition),       'LSP type definition')
-            map('gi',         beacon.wrap(vim.lsp.buf.implementation),        'LSP implementation')
-            map('gr',         vim.lsp.buf.references,                         'LSP references (quickfix)')
-            map('rn',         vim.lsp.buf.rename,                             'LSP rename')
-            map('<leader>ca', vim.lsp.buf.code_action,                        'LSP code action')
-            map('<leader>so', vim.lsp.buf.document_symbol,                    'LSP document symbols (quickfix)')
-            map(']e',         function() beacon.flash(); vim.diagnostic.jump({ count = 1, float = true }) end,
-                'Next diagnostic')
-            map('[e',         function() beacon.flash(); vim.diagnostic.jump({ count = -1, float = true }) end,
-                'Prev diagnostic')
-            map('<leader>db', function() vim.diagnostic.setloclist() end,    'Buf diagnostics (loclist)')
-            map('<leader>dw', function() vim.diagnostic.setqflist() end,     'Workspace diagnostics (quickfix)')
+            map('K',          require('core.enhanced_hover').show,            'LSP hover (with definition source)')
+            map('gd',         saga.cmd('Lspsaga goto_definition'),            'LSP definition')
+            map('gp',         saga.cmd('Lspsaga peek_definition'),            'LSP peek definition')
+            map('gtd',        saga.cmd('Lspsaga goto_type_definition'),       'LSP type definition')
+            map('gi',         saga.cmd('Lspsaga finder imp'),                 'LSP implementation')
+            -- lspsaga finder 若在 0.12 上出问题, 这行换回 vim.lsp.buf.references 即可
+            map('gr',         saga.cmd('Lspsaga finder'),                     'LSP references (finder)')
+            map('gR',         require('core.ref_kinds').show,                 'LSP references by set/get')
+            map('go',         saga.cmd('Lspsaga outgoing_calls'),             'LSP outgoing calls')
+            map('rn',         saga.cmd('Lspsaga rename'),                     'LSP rename')
+            map('<leader>ca', saga.cmd('Lspsaga code_action'),                'LSP code action')
+            map('<leader>so', saga.cmd('Lspsaga outline'),                    'LSP outline')
+            map(']e',         saga.cmd('Lspsaga diagnostic_jump_next'),       'Next diagnostic')
+            map('[e',         saga.cmd('Lspsaga diagnostic_jump_prev'),       'Prev diagnostic')
+            map('<leader>db', saga.cmd('Lspsaga show_buf_diagnostics'),       'Buf diagnostics')
+            map('<leader>dw', saga.cmd('Lspsaga show_workspace_diagnostics'), 'Workspace diagnostics')
         end
 
         -- 4. 使用 Neovim 0.11+ 的新 API 配置 LSP 服务器
         -- 参考: :help lspconfig-nvim-0.11
-        -- 全局默认 (capabilities + on_attach), 无需为每个 server 重复 merge
+        -- 全局默认 capabilities, 无需为每个 server 重复 merge
         vim.lsp.config('*', {
             capabilities = capabilities,
-            on_attach = on_attach,
+        })
+        -- on_attach 通过 LspAttach autocmd 触发:
+        -- config('*').on_attach 在部分 nvim 版本下不会被调用, 用 autocmd 保证生效
+        vim.api.nvim_create_autocmd('LspAttach', {
+            group = vim.api.nvim_create_augroup('UserLspAttach', { clear = true }),
+            callback = function(args)
+                local client = vim.lsp.get_client_by_id(args.data.client_id)
+                if client then
+                    on_attach(client, args.buf)
+                end
+            end,
         })
         for server_name, server_config in pairs(servers) do
             if next(server_config) ~= nil then

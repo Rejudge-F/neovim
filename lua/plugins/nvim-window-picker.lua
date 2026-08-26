@@ -27,6 +27,12 @@ return {
                         "dashboard",
                         "Outline",
                         "aerial",
+                        -- lspsaga 的浮窗已被下面 filter_func 的 relative 判断挡掉,
+                        -- 这里挡的是它开成 split 的 outline / diagnostics 窗口
+                        "sagaoutline",
+                        "sagafinder",
+                        "sagadiagnostic",
+                        "refkinds",
                     },
                     -- 只过滤真正不应该打开文件的 buftype
                     buftype = {
