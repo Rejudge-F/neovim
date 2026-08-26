@@ -4,6 +4,9 @@ vim.opt.termguicolors = true
 vim.o.winborder       = 'rounded'
 -- 不在 cmdline 显示 progress 消息（LSP 进度等），交由 statusline (lualine) 显示
 vim.opt.messagesopt   = 'hit-enter,history:500'
+-- 全局 statusline（整个界面只有一条，不是每个窗口一条）
+-- avante.nvim 要求：否则它的侧栏视图无法完全折叠
+vim.opt.laststatus    = 3
 -- vim.opt.clipboard      = 'unnamedplus'  -- 使用系统剪贴板
 vim.opt.timeoutlen    = 300 -- 减少键位映射等待时间（毫秒），默认1000
 vim.opt.sidescrolloff = 15
