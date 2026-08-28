@@ -127,6 +127,24 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 # Custom keybindings
 bindkey '^L' autosuggest-accept
 
+# Option/Alt+Backspace (kitty sends ESC DEL by default):
+# kill one alphanumeric word only, stopping at - _ . / etc.
+# Ctrl+W keeps its default (kills across punctuation, i.e. back to whitespace).
+backward-kill-alnum-word() {
+  local WORDCHARS=''
+  zle .backward-kill-word
+}
+zle -N backward-kill-alnum-word
+bindkey '^[^?' backward-kill-alnum-word
+
+# Option+fn+Delete: kill one word forward
+kill-alnum-word() {
+  local WORDCHARS=''
+  zle .kill-word
+}
+zle -N kill-alnum-word
+bindkey '^[[3;3~' kill-alnum-word
+
 # ============================================
 # Zoxide - Smarter cd (Deferred Loading)
 # ============================================
