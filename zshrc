@@ -60,6 +60,10 @@ autoload -Uz _zinit
 # Optimized compinit - skip security checks for maximum speed
 autoload -Uz compinit
 # Only regenerate compdump once a week (168 hours = 7 days)
+# NOTE: the (#q...) glob qualifier below is only evaluated inside [[ ]] when
+# EXTENDED_GLOB is set; without it the test is a plain non-empty string and is
+# always true, so the slow full compinit runs on every shell start.
+setopt EXTENDED_GLOB
 if [[ -n ${HOME}/.cache/.zcompdump(#qN.mh+168) ]]; then
   compinit -d "${HOME}/.cache/.zcompdump"
 else
