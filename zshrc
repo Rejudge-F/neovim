@@ -202,6 +202,12 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
     eval "${_cmd}() { _nvm_lazy_load; ${_cmd} \"\$@\"; }"
   done
   unset _cmd
+  # The wrappers above only cover interactive lookups. Put the newest installed
+  # node on PATH too, so scripts and `exec`/`env node` still resolve a binary
+  # without paying nvm.sh's ~500ms startup cost. nvm strips and replaces this
+  # entry itself once `nvm use` runs.
+  _nvm_bin=("$NVM_DIR"/versions/node/*(N/om[1]))
+  [ -n "$_nvm_bin" ] && export PATH="${_nvm_bin}/bin:$PATH"
+  unset _nvm_bin
 fi
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 export PATH="$HOME/.opencode/bin:$PATH"
