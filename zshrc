@@ -211,4 +211,3 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
   unset _nvm_bin
 fi
 export PATH="$HOME/.opencode/bin:$PATH"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
